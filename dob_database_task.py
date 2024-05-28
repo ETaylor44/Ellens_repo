@@ -1,6 +1,7 @@
 # Ask user: do you want to find information, add information or remove information?
 
 find = True
+remove = False
 invalid_entry = True
 while invalid_entry == True:
     read_or_write = input("Do you want to find information(f), add information(a) or remove information(r)? ")
@@ -49,7 +50,8 @@ if find == True:
         
     # If name is in the database, ask which details to display.
     while invalid_character == True and is_name_in_list == True:
-                    user_choice = input("Do you want full names (f), dates of birth (d), initials (i) or everything (e)? ")
+                    user_choice = input("Do you want full names (f), dates of birth (d)," 
+                                        " initials (i) or everything (e)? ")
                     match user_choice:
                         case "f":
                             print(details_as_list[0] + " " + details_as_list[1])            
@@ -79,36 +81,55 @@ invalid_data = True
 if find == False and remove == False:
     while invalid_data == True:
         user_data_input = input("Please enter 'firstname surname date month year' in this format: ")
-        user_data_input_as_list = user_data_input.split(" ")
+        user_data_input_titled = user_data_input.title()
+        user_data_input_as_list = user_data_input_titled.split(" ")
         if len(user_data_input_as_list) == 5:
             with open("DOB.txt", "w") as f:
-                f.write(all_lines + "\n" + user_data_input)
+                f.write(all_lines + "\n" + user_data_input_titled)
+            print(f"{user_data_input_titled} has been Successfully added to the database")
             invalid_data = False
         else:
             print("Please make sure to use the specified formatting.")
 
 # Remove:
 
+name_in_database = False
 invalid_name = True
 if remove == True:
     while invalid_name == True:
         info_to_remove_user_input = input("Please enter the first name of the person" 
-                                        "whose information you would like to remove: ")
+                                        " whose information you would like to remove: ")
         f = open("DOB.txt", "r+")
         for line in f:
                 line_split = line.split(" ")
                 if line_split[0].lower() == info_to_remove_user_input.lower():
-                    remove_choice = input("Would you like to remove " + "\033[1m" + line + "?(y or n) ")
-                    match remove_choice:
-                        case "y":
-                            #remove line somehow...
-                            print(line_split[0] + line_split[1] + " has been removed from the file.")
-                            invalid_name = False
-                        case "n":
-                            # return to start of while loop
-                            print(line_split[0] + line_split[1] + " has not been removed from the file.")
-                        case _:
-                            print("You did not enter a valid input.") 
+                    line_to_remove = line
+                    line_to_remove_split = line_to_remove.split(" ")
+                    invalid_name = False
+                    name_in_database = True
+    if name_in_database == False:
+        print("This name isn't in the database.")
+
+invalid_input = True
+if remove == True:
+    while invalid_input:
+        remove_choice = input("Would you like to remove " + "\033[1m" + 
+                            line_to_remove.strip("\n") + "\033[0m" + "? (y or n) ")
+        match remove_choice:
+            case "y":
+                with open("DOB.txt", "r") as f:
+                    lines = f.readlines()
+                with open("DOB.txt", "w") as f:
+                    for line in lines:
+                        if line.strip("\n") != line_to_remove.strip("\n"):
+                            f.write(line)
+                print(f"{line_to_remove_split[0]} {line_to_remove_split[1]} has been removed from the file.")
+                invalid_input = False
+            case "n":
+                print(f"{line_to_remove_split[0]} {line_to_remove_split[1]} has not been removed from the file.")
+                invalid_input = False
+            case _:
+                print("You did not enter a valid input.") 
 
 
 
