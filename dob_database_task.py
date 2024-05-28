@@ -50,7 +50,7 @@ if find == True:
         
     # If name is in the database, ask which details to display.
     while invalid_character == True and is_name_in_list == True:
-                    user_choice = input("Do you want full names (f), dates of birth (d)," 
+                    user_choice = input("Do you want full name (f), date of birth (d)," 
                                         " initials (i) or everything (e)? ")
                     match user_choice:
                         case "f":
@@ -114,7 +114,7 @@ invalid_input = True
 if remove == True:
     while invalid_input:
         remove_choice = input("Would you like to remove " + "\033[1m" + 
-                            line_to_remove.strip("\n") + "\033[0m" + "? (y or n) ")
+                            line_to_remove.strip("\n").title() + "\033[0m" + "? (y or n) ")
         match remove_choice:
             case "y":
                 with open("DOB.txt", "r") as f:
@@ -123,10 +123,12 @@ if remove == True:
                     for line in lines:
                         if line.strip("\n") != line_to_remove.strip("\n"):
                             f.write(line)
-                print(f"{line_to_remove_split[0]} {line_to_remove_split[1]} has been removed from the file.")
+                print(f"{line_to_remove_split[0].title()} {line_to_remove_split[1].title()} 
+                      has been removed from the file.")
                 invalid_input = False
             case "n":
-                print(f"{line_to_remove_split[0]} {line_to_remove_split[1]} has not been removed from the file.")
+                print(f"{line_to_remove_split[0].title()} {line_to_remove_split[1].title()} 
+                      has not been removed from the file.")
                 invalid_input = False
             case _:
                 print("You did not enter a valid input.") 
