@@ -60,12 +60,18 @@ def print_stave(user_nat_note):
     for i in range(0, 7):
         if i % 2 == 1:
             if i == user_nat_note:
-                print("--o--")
+                if len(user_note) == 2:
+                    print("--o#-")
+                else:
+                    print("--o--")
             else:
                 print("-" * 5)
         else:
             if i == user_nat_note:
-                print("  o")
+                if len(user_note) == 2:
+                    print("  o#")
+                else:
+                    print("  o")
             else:
                 print(" " * 2)
     print("-" * 5)
@@ -90,7 +96,6 @@ def create_key(user_input_note_index, notes, is_major_key):
 
 # Calling the major or minor function depending on user input.
 # while loop to catch invalid input
-invalid_entry = True
 user_key_input = input("\nWould you like the major or minor key? ")
 if user_key_input.lower() == "major" or user_key_input == "maj":
     is_major_key = True
