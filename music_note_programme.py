@@ -56,6 +56,7 @@ for i in range(0, len(natural_notes)):
 
 #Function to print stave with musical note.
 def print_stave(user_nat_note):
+    print(" " * 2)
     print("-" * 5)
     for i in range(0, 7):
         if i % 2 == 1:
@@ -82,10 +83,10 @@ def create_key(user_input_note_index, notes, is_major_key):
     new_key = []
     if is_major_key == True:
         scale = maj_scale
-        statement = f"Notes of a {user_note.upper()} Major scale: "
+        statement = f"Notes of the {user_note.upper()} Major scale: "
     else:
         scale = min_scale
-        statement = f"Notes of a {user_note.upper()} Minor scale: "
+        statement = f"Notes of the {user_note.upper()} Minor scale: "
     for i in range(0, len(scale)):
         note_position = scale[i] + user_input_note_index
         if note_position > len(notes)-1:
@@ -94,17 +95,69 @@ def create_key(user_input_note_index, notes, is_major_key):
     print(statement)
     print(new_key)
 
-# Calling the major or minor function depending on user input.
-# while loop to catch invalid input
-user_key_input = input("\nWould you like the major or minor key? ")
-if user_key_input.lower() == "major" or user_key_input == "maj":
-    is_major_key = True
-elif user_key_input.lower() == "minor" or user_key_input == "min":
-    is_major_key = False
-else:
-    print("This is not an option.")
+# Function to call triad function or create key function.
+def user_key_input_func(user_key_input, call_triad_func):
+    if user_key_input.lower() == "major" or user_key_input == "maj":
+        is_major_key = True
+        if call_triad_func == False:
+            call_create_key_func = True
+        else:
+            call_create_key_func = False
+    elif user_key_input.lower() == "minor" or user_key_input == "min":
+        is_major_key = False
+        if call_triad_func == False:
+            call_create_key_func = True
+        else: 
+            call_create_key_func = False
+    else:
+        print("Please enter a valid option.")
+        call_create_key_func = False
+        user_key_input = input("\nWould you like the Major or Minor key? ")
+        user_key_input_func(user_key_input)
+    if call_create_key_func == True:
+        create_key(user_input_note_index, notes, is_major_key)
+    else:
+        create_chords(user_note_input, notes, is_major_key)
 
-create_key(user_input_note_index, notes, is_major_key)
+user_key_input = input("\nWould you like the Major or Minor key? ")
+call_triad_func = False
+
+user_key_input_func(user_key_input, call_triad_func)
+
+
+def create_chords(user_note_input, notes, is_major_key):
+    triad = []
+    for j in range(0, len(notes)):
+        if user_note_input.lower() == notes[j].lower():
+            user_note_index = j
+            if is_major_key == True:
+                third_index = user_note_index + 4
+                if third_index >= 12:
+                    third_index -= 12
+                third = notes[third_index]
+            else:
+                third_index = user_note_index + 3
+                if third_index >= 12:
+                    third_index -= 12
+                third = notes[third_index]
+            fifth_index = user_note_index + 7
+            if fifth_index >= 12:
+                fifth_index -= 12
+            fifth = notes[fifth_index]
+            triad.extend([notes[user_note_index], third, fifth])
+            print(triad)
+
+print("\nThis programme will construct a Major or Minor triad.")
+user_note_input = input("Please enter the tonic of a triad: ")
+user_key_input = input("Would you like the Major or Minor chord? ")
+call_triad_func = True
+
+user_key_input_func(user_key_input, call_triad_func)
+
+
+
+
+
 
 
 
