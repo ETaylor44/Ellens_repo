@@ -33,17 +33,23 @@ def initialse_riff(riff, note_list, number_of_notes):
 
 # Function to check that user input is a musical note.
 def get_note_input(user_input_prompt, error_message):
-    not_a_note = True
     while True:
         user_note = input(user_input_prompt)
         for i in range(0, len(sharp_notes)):
             if user_note.lower() == sharp_notes[i].lower():
-                user_input_note_index = i
-                not_a_note = False
-                return (user_input_note_index, user_note)
-        if not_a_note == True:
-            print(error_message)
+                return user_note
+        print(error_message)
 
+# Get index of note in list of notes.
+def get_note_index_in_list(user_note):
+    for i in range(0, len(sharp_notes)):
+            if user_note.lower() == sharp_notes[i].lower():
+                return i
+
+# Convert user note (as string) to a list.
+def convert_user_note_to_list(user_note, list_of_notes):
+    list_of_notes.append(user_note)
+    return list_of_notes
 
 #Function to print stave with musical note.
 def print_stave(natural_triad, list_of_notes):
@@ -120,15 +126,15 @@ def user_key_input_func(user_key_input, call_triad_func):
     if user_key_input.lower() == "major" or user_key_input == "maj":
         is_major_key = True
         if call_triad_func == False:
-            create_key(user_input[0], sharp_notes, is_major_key, user_input[1])
+            create_key(user_input_note_index, sharp_notes, is_major_key, user_note)
         else:
-            create_chords(user_input[1], sharp_notes, is_major_key)
+            create_chords(user_note, sharp_notes, is_major_key)
     elif user_key_input.lower() == "minor" or user_key_input == "min":
         is_major_key = False
         if call_triad_func == False:
-            create_key(user_input[0], sharp_notes, is_major_key, user_input[1])
+            create_key(user_input_note_index, sharp_notes, is_major_key, user_note)
         else:
-            create_chords(user_input[1], sharp_notes, is_major_key)
+            create_chords(user_note, sharp_notes, is_major_key)
 
 # Function to construct a major or minor triad.
 def create_chords(user_note, note_list, is_major_key):
@@ -170,8 +176,9 @@ initialse_riff(riff, sharp_notes, user_input)
 
 #2 scale
 print("\nThis programme will generate the notes of any major or minor key.")
-user_input = get_note_input(starting_note_for_key, invalid_note_message)
-list_of_notes.append(user_input[1])
+user_note = get_note_input(starting_note_for_key, invalid_note_message)
+user_input_note_index = get_note_index_in_list(user_note)
+list_of_notes = convert_user_note_to_list(user_note, list_of_notes)
 check_for_sharp(list_of_notes)
 
 call_triad_func = False
@@ -179,7 +186,7 @@ user_key_input = user_key_input = get_user_input_maj_min(user_key_prompt, invali
 
 user_key_input_func(user_key_input, call_triad_func)
 
-# 3 Triad function
+# 3 Triad 
 print("\nThis programme will construct a Major or Minor triad.")
 
 user_input = get_note_input(starting_note_for_triad, invalid_note_message)
