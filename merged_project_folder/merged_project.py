@@ -1,0 +1,78 @@
+import email
+import dob_database_manager 
+import task_manager
+
+username_prompt = "\nPlease enter your username: "
+password_prompt = "Please enter your password: "
+error_message = "\nYour username or password is incorrect. Please try again."
+error_message_two = "\nOops - Please try again."
+
+# Get username and password input.
+def get_username_password_input(username_input_prompt, password_input_prompt):
+    while True:
+        username_input = input(username_input_prompt)
+        password_input = input(password_input_prompt)
+        return username_input, password_input
+
+# Read user.txt to see if username and password match existing ones.
+def read_txt_file(username_input, password_input, error_message):
+    f = None
+    try: 
+        with open("user.txt", "r", encoding='utf-8') as f:
+            all_data = f.readlines()
+            for line in all_data:
+                data_as_list = line.split(", ")
+                if data_as_list[0] == username_input and data_as_list[1].strip("\n") == password_input:
+                    return username_input, password_input
+            # If no match, recall get_username_password_input function.
+            print(error_message)
+            return get_username_password_input(username_prompt, password_prompt)
+    except FileNotFoundError:
+        print("Please open the user text file.")
+    finally:
+        if f is not None:
+            f.close()
+
+def get_user_input(error_message):
+    while True:
+        user_input = input('''\n\033[0mSelect one of the following options:
+    v - view emails
+    tm - enter task manager
+    dob - enter date of birth database manager
+    l - logout
+                           
+    Enter selection: ''').lower()
+        if user_input == "v" or user_input == "tm" or user_input == "dob" or user_input == "l":
+            return user_input
+        else:
+            print(error_message)
+
+
+# Script.  
+# Get valid username and password from user.               
+username_password = get_username_password_input(username_prompt, password_prompt)
+read_txt_file(username_password[0], username_password[1], error_message)
+
+# Display menu and get valid user input.
+print("\n\033[1mMain Menu")
+user_input = get_user_input(error_message_two)
+
+if user_input == "v":
+    user_selection = "view emails."
+    email.email_programme_function()
+    user_input = get_user_input(error_message_two)
+
+elif user_input == "tm":
+    user_selection = "enter task manager."
+    task_manager.task_manager_func(username_password[0])
+    user_input = get_user_input(error_message_two)
+
+elif user_input == "dob":
+    user_selection = "enter date of birth database manager."
+    dob_database_manager.dob_database_manager_func()
+    user_input = get_user_input(error_message_two)
+
+else:
+    exit_message = print("\nGoodbye!")
+
+    
