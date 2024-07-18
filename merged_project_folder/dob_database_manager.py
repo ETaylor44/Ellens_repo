@@ -185,4 +185,3 @@ def dob_database_manager_func():
         #   secondName = GetUserStringInput("What is the second name?")
         #   age = GetUserIntInput("What is the age?")
 
-dob_database_manager_func()

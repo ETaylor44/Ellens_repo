@@ -26,7 +26,7 @@ def email_programme_function():
     # List subject lines of emails with a corresponding number.
     def list_emails(inbox_list):
         subject_list = []
-        index = 0
+        index = 1
         for email in inbox_list:
             subject = email.subject_line
             subject_list.append(subject)
