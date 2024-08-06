@@ -1,0 +1,8 @@
+admin, Register Users with task_manager.py, Use task_manager.py to add the usernames and passwords for all team members that will be using this program., 10 Oct 2019, 20 Oct 2019, No
+admin, Assign initial tasks, Use task_manager.py to assign each team member with appropriate tasks, 10 Oct 2019, 25 Oct 2019, No
+ellen, text megan, ask megan if i can come over soon, 06/19/2024, 20/06/2024, No
+fff, text, message, 06/19/2024, 20/12/2024, No
+ellen, do something, try harder, 06/20/2024, 20/06/2024, No
+ellen, fg, fg, 06/20/2024, df, No
+ellen, ad, ad, 06/20/2024, 21/09/2025, No
+mum, gardening, weed the flowerbed, 06/21/2024, 01/07/2024, No
