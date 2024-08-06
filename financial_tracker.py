@@ -15,7 +15,6 @@ class Transaction():
     def format_date(self):
         formatted_date = self.date.strftime("%d/%m/%y")
         return formatted_date
-    
 
     def create_rows(self, table_name, column_list):
         formatted_date = self.format_date()
@@ -45,6 +44,7 @@ class Financial_goal():
         self.goal_desc = goal_desc
         self.complete = complete
     
+    # cm: Implement this func.
     def set_as_complete(self):
         self.complete = True
         return True
@@ -79,6 +79,7 @@ financial_goals_column_list = "goal,complete"
 budget_table_columns = "category TEXT, amount VARCHAR"
 budget_table_column_list = "category,amount"
 
+# cm: Iterate through your lists to generate these strings.
 get_user_expense_category = f'''Please choose a category
                                                         
 1. Eating out
@@ -146,6 +147,7 @@ def get_user_input(data_category, get_user_category_message):
 def validate_user_input(user_input, data_category, category_list):
     if data_category == "reference":
         while True:
+            # cm: Remove magic number.
             if len(user_input) > 20:
                 user_input = input("Too many characters. Please try again: ")
             else:
@@ -163,7 +165,8 @@ def validate_user_input(user_input, data_category, category_list):
 
         
     elif data_category == "category":
-        while True:         
+        while True:
+            # cm: Generate this string from lists.
             if user_input not in ("1", "2", "3", "4", "5", "6"):
                 user_input = input("Please choose a valid option: ")
             else:
@@ -203,7 +206,80 @@ def validate_user_input(user_input, data_category, category_list):
                 else: user_input = input("Please enter a valid number: ")
             except ValueError:
                 user_input = input("Please enter a number: ")
+    
+def convert_string_to_float(user_input_string):
+    try:
+        return float(user_input_string)
+    except:
+        return None  
+      
+def convert_string_to_int(user_input_string):
+    try:
+        return int(user_input_string)
+    except:
+        return None
+
+def reference_validation(user_input):
+    return len(user_input) <= 20
+
+def amount_validation(user_input):
+    user_input = convert_string_to_float(user_input)
+    return user_input != None
+
+def category_validation(user_input):
+    if user_input in ("1", "2", "3", "4", "5", "6"):
+        # for i in range(0, len(category_list)+1):
+        #     if int(user_input) == i:
+        #         user_input = category_list[i-1]
+        return True
+    else:
+        return False
+    
+def year_validation(user_input):
+    user_input = convert_string_to_int(user_input)
+    return user_input > 0 and user_input < 3000
+
+
+def month_validation(user_input):
+    user_input = convert_string_to_int(user_input)
+    return user_input > 0 and user_input < 13
+    
+def day_validation(user_input):
+    user_input = convert_string_to_int(user_input)
+    return user_input > 0 and user_input < 31
+
+
+def validate_user_input_CM(user_input, data_category, category_list):
+
+    if data_category == "reference":
+        variable_holding_validation_function = reference_validation
+        error_message = "Too many characters. Please try again: "
+    elif data_category == "amount":
+        variable_holding_validation_function = amount_validation
+        error_message = "Please try again: "
+    elif data_category == "category":
+        variable_holding_validation_function = category_validation
+        error_message = "Please try again: "
+    elif data_category == "year":
+        variable_holding_validation_function = year_validation
+        error_message = "Please try again: "
+    elif data_category == "month":
+        variable_holding_validation_function = month_validation
+        error_message = "Please try again: "
+    else:
+        variable_holding_validation_function = day_validation
+        error_message = "Please try again: "
+
+    while True:
+        if variable_holding_validation_function(user_input):
+            return user_input
+        else:
+            user_input = input(error_message)
+            
+
                     
+
+
 
 # View all expenses or incomes
 def get_transactions(table_name, incoming_value):
@@ -269,6 +345,7 @@ def get_amount_left_over(sum_of_expenses, sum_of_incomes):
     amount_left_over = sum_of_incomes - sum_of_expenses
     return amount_left_over
 
+#cm: Create a list of default budgets
 def get_budget_percentage(user_budget_category):
     if user_budget_category == "Eating out":
         budget_percentage = 10
@@ -319,6 +396,7 @@ cursor = db.cursor()
 if table_already_exists == False:
     create_table(transactions_table_name, transactions_table_columns)
 
+    #cm: add a comment explaining that this is default data.
     expense1 = Transaction(1, "tshirt", 12.3, "Clothing", 2024, 4, 14, True)
     expense2 = Transaction(2, "eggs", 2.5, "Groceries", 2024, 4, 14, True)
     expense3 = Transaction(3, "Zizzi", 20, "Eating out", 2024, 4, 14, True)
@@ -351,6 +429,7 @@ else:
     all_budgets = add_data_to_class(existing_budget_data, "budget", all_budgets)
 
 while True:
+    # cm: explain \033[1m
     user_input_main_script = input('''\n
                 \033[1mMain Menu\033[0m
 
@@ -373,6 +452,7 @@ Enter selection: ''')
         
         new_data = []
         for data_entry_header in data_entry_headers:
+            # cm: Create a function get_valid_user_input to replace these two lines:
             user_input = get_user_input(data_entry_header, get_user_expense_category)
             user_input = validate_user_input(user_input, data_entry_header, expense_category_list)
             new_data.append(user_input)
@@ -507,6 +587,7 @@ Enter selection: ''')
         # Get category from user
         user_budget_category = get_user_input("category", get_user_expense_category)
         user_budget_category = validate_user_input(user_budget_category, "category", expense_category_list)
+        # cm: add code to convert number to category.
 
         # Check if budget already exists for users chosen category.
         budget_exists = False
