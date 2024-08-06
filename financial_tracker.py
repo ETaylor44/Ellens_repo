@@ -1,3 +1,7 @@
+# This programme interacts with a database to store expenses, incomes, budgets and financial goals.
+# The user can add expenses, incomes, budgets and financial goals manually.
+# The programme also generates budgets automatically for each category, the budget depending on total expenses and income.
+
 import sqlite3
 import datetime
 import os.path

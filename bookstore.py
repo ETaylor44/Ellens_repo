@@ -1,3 +1,5 @@
+# A program which allows the user to search for, add, modify and delete books in the database.
+
 import sqlite3
 
 # Create books class.

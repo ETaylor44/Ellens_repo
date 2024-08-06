@@ -1,3 +1,7 @@
+# This program was created during my work for a youth orchestra in preparation for and during a residential course.
+# We needed up-to-date daily registers for mealtimes, orchestral rehearsals and other intervals throughout the day, each containing different information.
+# Using a central excel file, I pulled the required columns, stored them in a database and wrote them to csv's to create custom registers.
+
 import csv
 import sqlite3
 import os

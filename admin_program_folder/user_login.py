@@ -1,3 +1,6 @@
+# This is the central script for my admin program. The branches of the program are imported as libraries.
+# Here user enters a username and password, and choose a branch of the program. The main function from the corresponding library is then called.
+
 import email
 import dob_database_manager 
 import task_manager

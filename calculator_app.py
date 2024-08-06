@@ -1,3 +1,6 @@
+# A program which takes 2 numbers and an arithmetic operator from the user. It then performs the calculation and stores the equation in a text file. 
+# The user can view all previous calculations stored in the text file.
+
 # Variable list.
 perform_or_view_message = "Would you like to perform a calculation(1) or view previous calculations(2) or exit the programme(e)? "
 error_message = "Please enter either 1 or 2 or e."

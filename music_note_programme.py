@@ -1,3 +1,8 @@
+# The program follows this narative:
+# User is asked for a number. A random musical riff is generated with the corresponding number of notes.
+# User is asked for a musical key. All notes in the corresponding key are generated.
+# User is asked for the base note of a musical chord. Corresponding chord is generated.
+
 import random
 
 riff = []
