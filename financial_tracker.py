@@ -74,7 +74,9 @@ transactions_table_name = "transactions"
 transactions_table_columns = "id INT PRIMARY KEY, reference TEXT, amount VARCHAR, category TEXT, date VARCHAR, outgoing BIT NOT NULL"
 transactions_column_list = "id,reference,amount,category,date,outgoing"
 expense_category_list = ["Eating out", "Groceries", "Travel", "Household", "Clothing", "Other"]
+expense_category_list_index = [0, 1, 2, 3, 4, 5]
 income_category_list = ["Salaried work", "Sold item", "Freelance work", "Reimbursement", "Gift", "Other"]
+income_category_list_index = [0, 1, 2, 3, 4, 5, 6]
 data_entry_headers = ["reference", "amount", "category", "year", "month", "day"]
 
 financial_goals_table_columns = "goal VARCHAR, complete BIT"
@@ -83,28 +85,9 @@ financial_goals_column_list = "goal,complete"
 budget_table_columns = "category TEXT, amount VARCHAR"
 budget_table_column_list = "category,amount"
 
-# cm: Iterate through your lists to generate these strings.
-get_user_expense_category = f'''Please choose a category
-                                                        
-1. Eating out
-2. Groceries
-3. Travel
-4. Household
-5. Clothing
-6. Other
-                                
-Enter selection: '''
-
-get_user_income_category = f'''Please choose a category
-                                                        
-1. Salaried job
-2. Sold item
-3. Freelance work
-4. Reimbursement
-5. gift
-6. Other
-                                
-Enter selection: '''
+max_ref_length = 20
+default_budgets_by_category = [10, 20, 25, 20, 10, 25]
+header = "Financial Goals"
 
 
 # Functions
@@ -140,10 +123,20 @@ def add_data_to_class(existing_data, class_name, list_of_objects):
 
 
 # Add expenses
-def get_user_input(data_category, get_user_category_message):
+
+def get_user_transaction_category(list_of_transaction_categories):
+    category_menu = "Please choose a category:\n"
+    for index, item in enumerate(list_of_transaction_categories, 1):
+        category_menu += f"\n{index}. {item}"
+
+    user_input = input(f"{category_menu}\n\nEnter selection: ")
+    return user_input
+
+
+def get_user_input(data_category, list_of_transaction_categories):
     while True:
         if data_category == "category":
-            user_input = input(get_user_category_message)
+            user_input = get_user_transaction_category(list_of_transaction_categories)
         else:
             user_input = input(f"Please enter the {data_category}: ")
         return user_input
@@ -151,8 +144,7 @@ def get_user_input(data_category, get_user_category_message):
 def validate_user_input(user_input, data_category, category_list):
     if data_category == "reference":
         while True:
-            # cm: Remove magic number.
-            if len(user_input) > 20:
+            if len(user_input) > max_ref_length:
                 user_input = input("Too many characters. Please try again: ")
             else:
                 return user_input
@@ -170,14 +162,12 @@ def validate_user_input(user_input, data_category, category_list):
         
     elif data_category == "category":
         while True:
-            # cm: Generate this string from lists.
-            if user_input not in ("1", "2", "3", "4", "5", "6"):
-                user_input = input("Please choose a valid option: ")
-            else:
-                for i in range(0, len(category_list)+1):
-                    if int(user_input) == i:
-                        user_input = category_list[i-1]
-                        return user_input
+            for i in range(0, len(category_list)):
+                if int(user_input) == i+1:
+                    user_input = convert_category_input_to_string(user_input, category_list)
+                    return user_input
+            user_input = input("Please try again: ")
+            
                     
     elif data_category == "year":
         while True:
@@ -210,6 +200,19 @@ def validate_user_input(user_input, data_category, category_list):
                 else: user_input = input("Please enter a valid number: ")
             except ValueError:
                 user_input = input("Please enter a number: ")
+
+def get_valid_user_input(data_category, category_list):
+    user_input = get_user_input(data_category, category_list)
+    user_input = validate_user_input_CM(user_input, data_category, category_list)
+    return user_input
+
+
+
+
+
+
+
+
     
 def convert_string_to_float(user_input_string):
     try:
@@ -224,20 +227,23 @@ def convert_string_to_int(user_input_string):
         return None
 
 def reference_validation(user_input):
-    return len(user_input) <= 20
+    return len(user_input) <= max_ref_length
 
 def amount_validation(user_input):
     user_input = convert_string_to_float(user_input)
     return user_input != None
 
-def category_validation(user_input):
-    if user_input in ("1", "2", "3", "4", "5", "6"):
-        # for i in range(0, len(category_list)+1):
-        #     if int(user_input) == i:
-        #         user_input = category_list[i-1]
-        return True
-    else:
-        return False
+def category_validation(user_input, category_list):
+    for i in range(0, len(category_list)):
+        if user_input == i+1:
+            return True
+    return False
+
+def convert_category_input_to_string(user_input, category_list):
+    for i in range(0, len(category_list)+1):
+        if int(user_input) == i:
+            user_input = category_list[i-1]
+            return user_input
     
 def year_validation(user_input):
     user_input = convert_string_to_int(user_input)
@@ -253,7 +259,7 @@ def day_validation(user_input):
     return user_input > 0 and user_input < 31
 
 
-def validate_user_input_CM(user_input, data_category, category_list):
+def validate_user_input_CM(user_input, data_category):
 
     if data_category == "reference":
         variable_holding_validation_function = reference_validation
@@ -279,6 +285,10 @@ def validate_user_input_CM(user_input, data_category, category_list):
             return user_input
         else:
             user_input = input(error_message)
+
+
+
+
             
 
                     
@@ -308,7 +318,8 @@ def format_transaction_list(list_of_transactions, income_or_expense):
         Amount: {display_amount_as_gbp(float(tuple[1]))}
         Date of transaction: {tuple[2]}'''
 
-        print(formatted_expenses)
+        return formatted_expenses 
+    return f"You have recorded no {income_or_expense.lower()} in this category."
 
 def display_amount_as_gbp(amount):
     pence = str(amount).split(".")[-1]
@@ -349,21 +360,11 @@ def get_amount_left_over(sum_of_expenses, sum_of_incomes):
     amount_left_over = sum_of_incomes - sum_of_expenses
     return amount_left_over
 
-#cm: Create a list of default budgets
 def get_budget_percentage(user_budget_category):
-    if user_budget_category == "Eating out":
-        budget_percentage = 10
-    elif user_budget_category == "Groceries":
-        budget_percentage = 20
-    elif user_budget_category == "Travel":
-        budget_percentage == 25
-    elif user_budget_category == "Household":
-        budget_percentage = 20
-    elif user_budget_category == "Clothing":
-        budget_percentage = 10
-    else:
-        budget_percentage = 25
-    return budget_percentage
+    for i in range(0, len(expense_category_list)):
+        if user_budget_category == expense_category_list[i]:
+            budget_percentage = default_budgets_by_category[i]
+            return budget_percentage
 
 def calculate_budget(amount_left_over, budget_percentage):
     user_budget_amount = (float(amount_left_over)/100) * budget_percentage
@@ -381,9 +382,18 @@ def confirm_budget_replace(user_input):
             return False
         user_input = input("Please enter a valid option: ")
 
+def view_financial_goals(header, all_goals):
+    print(f'''\n\033[1m{header.center(43)}\033[0m''')
+    for goal in all_goals:
+        if goal.complete == False:
+            is_complete = "Not complete"
+        else:
+            is_complete = "Complete"
+        print(f"\nGoal: {goal.goal_desc}\t{is_complete}")
 
-
-
+goals_list_input = "Which goal have you completed?\n"
+for index, item in enumerate(all_goals, 1):
+    goals_list_input += f"\n{index}. {item}"
 
 
 
@@ -400,7 +410,7 @@ cursor = db.cursor()
 if table_already_exists == False:
     create_table(transactions_table_name, transactions_table_columns)
 
-    #cm: add a comment explaining that this is default data.
+    # Default expenses and income data.
     expense1 = Transaction(1, "tshirt", 12.3, "Clothing", 2024, 4, 14, True)
     expense2 = Transaction(2, "eggs", 2.5, "Groceries", 2024, 4, 14, True)
     expense3 = Transaction(3, "Zizzi", 20, "Eating out", 2024, 4, 14, True)
@@ -433,7 +443,7 @@ else:
     all_budgets = add_data_to_class(existing_budget_data, "budget", all_budgets)
 
 while True:
-    # cm: explain \033[1m
+    # \033[1m = Bold text
     user_input_main_script = input('''\n
                 \033[1mMain Menu\033[0m
 
@@ -447,7 +457,8 @@ while True:
 8. View budget for a category
 9. Set financial goals
 10. View progress towards financial goals
-11. Quit
+11. Compelete financial goals
+12. Quit
 
 Enter selection: ''')
     
@@ -456,13 +467,13 @@ Enter selection: ''')
         
         new_data = []
         for data_entry_header in data_entry_headers:
-            # cm: Create a function get_valid_user_input to replace these two lines:
-            user_input = get_user_input(data_entry_header, get_user_expense_category)
-            user_input = validate_user_input(user_input, data_entry_header, expense_category_list)
+            user_input = get_valid_user_input(data_entry_header, expense_category_list)
             new_data.append(user_input)
 
+        category_name = convert_category_input_to_string(new_data[2])
+
         new_id = all_transactions[-1].id + 1
-        new_expense = Transaction(new_id, new_data[0], new_data[1], new_data[2], 
+        new_expense = Transaction(new_id, new_data[0], new_data[1], category_name, 
                                   new_data[3], new_data[4], new_data[5], True)
         all_transactions.append(new_expense)
         new_expense.create_rows(transactions_table_name, transactions_column_list)
@@ -476,17 +487,16 @@ Enter selection: ''')
 
     # View expenses by category
     elif user_input_main_script == "3":
-        user_input_category = get_user_input("category", get_user_expense_category)
-        user_input_category = validate_user_input(user_input_category, "category", expense_category_list)
+        user_input_category = get_valid_user_input("category", expense_category_list)
         expenses_in_category = get_transactions_by_category(transactions_table_name, user_input_category, 1)
-        format_transaction_list(expenses_in_category, "Expense") 
+        message = format_transaction_list(expenses_in_category, "Expense") 
+        print(message)
 
     # Add income
     elif user_input_main_script == "4":
         new_data = []
         for data_entry_header in data_entry_headers:
-            user_input = get_user_input(data_entry_header, get_user_income_category)
-            user_input = validate_user_input(user_input, data_entry_header, income_category_list)
+            user_input = get_valid_user_input(data_entry_header, income_category_list)
             new_data.append(user_input)
 
         new_id = all_transactions[-1].id + 1
@@ -502,8 +512,7 @@ Enter selection: ''')
     
     # View incomes by category
     elif user_input_main_script == "6":
-        user_input_category = get_user_input("category", get_user_income_category)
-        user_input_category = validate_user_input(user_input_category, "category", income_category_list)
+        user_input_category = get_valid_user_input("category", income_category_list)
         incomes_in_category = get_transactions_by_category(transactions_table_name, user_input_category, 0)
         format_transaction_list(incomes_in_category, "Income") 
     
@@ -519,8 +528,7 @@ Enter selection: ''')
         user_budget_type = get_valid_budget_options(user_budget_type)
         
         # Get category from user
-        user_budget_category = get_user_input("category", get_user_expense_category)
-        user_budget_category = validate_user_input(user_budget_category, "category", expense_category_list)
+        user_budget_category = get_valid_user_input("category", expense_category_list)
         
         # Check whether a budget within chosen category already exists.
         is_budget_existing = False
@@ -535,8 +543,7 @@ Enter selection: ''')
         if is_budget_existing == False or all_budgets == []:
             # Enter budget manually.
             if user_budget_type == "1":
-                user_budget_amount = get_user_input("amount", get_user_expense_category)
-                user_budget_amount = validate_user_input(user_budget_amount, "amount", expense_category_list)
+                user_budget_amount = get_valid_user_input("amount", expense_category_list)
             else:
                 # Get budget automatically.
                 amount_left_over = get_amount_left_over(0, 0)
@@ -566,8 +573,7 @@ Enter selection: ''')
             if is_replace_budget == True:
                 # Get budget manually.
                 if user_budget_type == "1":
-                    user_budget_amount = get_user_input("amount", get_user_expense_category)
-                    user_budget_amount = validate_user_input(user_budget_amount, "amount", expense_category_list)
+                    user_budget_amount = get_valid_user_input("amount", expense_category_list)
                 else:
                     # Get budget automatically.
                     amount_left_over = get_amount_left_over(0, 0)
@@ -581,18 +587,13 @@ Enter selection: ''')
                 db.commit()
                 budget_set_message(existing_budget_in_category)
 
-                # existing_budget_in_category.amount = user_budget_amount
-                # budget_set_message(existing_budget_in_category)
             else:
                 budget_set_message(existing_budget_in_category)
 
     # View budget by category
     elif user_input_main_script == "8":
         # Get category from user
-        user_budget_category = get_user_input("category", get_user_expense_category)
-        user_budget_category = validate_user_input(user_budget_category, "category", expense_category_list)
-        # cm: add code to convert number to category.
-
+        user_budget_category = get_valid_user_input("category", expense_category_list)
         # Check if budget already exists for users chosen category.
         budget_exists = False
         for budget in all_budgets:
@@ -627,17 +628,14 @@ Enter selection: ''')
         if all_goals == []:
             print("\nNo financial goals")
         else:
-            header = "Financial Goals"
-            print(f'''\n\033[1m{header.center(43)}\033[0m''')
-            for goal in all_goals:
-                if goal.complete == False:
-                    is_complete = "Not complete"
-                else:
-                    is_complete = "Complete"
-                print(f"\nGoal: {goal.goal_desc}\t{is_complete}")
+            view_financial_goals(header, all_goals)
 
 
+    # Complete financial goals
     elif user_input_main_script == "11":
+        view_financial_goals(header, all_goals)
+
+    elif user_input_main_script == "12":
         print("Goodbye!")
         break
     
