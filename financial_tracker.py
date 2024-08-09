@@ -203,13 +203,8 @@ def validate_user_input(user_input, data_category, category_list):
 
 def get_valid_user_input(data_category, category_list):
     user_input = get_user_input(data_category, category_list)
-    user_input = validate_user_input_CM(user_input, data_category, category_list)
+    user_input = validate_user_input(user_input, data_category, category_list)
     return user_input
-
-
-
-
-
 
 
 
@@ -226,18 +221,6 @@ def convert_string_to_int(user_input_string):
     except:
         return None
 
-def reference_validation(user_input):
-    return len(user_input) <= max_ref_length
-
-def amount_validation(user_input):
-    user_input = convert_string_to_float(user_input)
-    return user_input != None
-
-def category_validation(user_input, category_list):
-    for i in range(0, len(category_list)):
-        if user_input == i+1:
-            return True
-    return False
 
 def convert_category_input_to_string(user_input, category_list):
     for i in range(0, len(category_list)+1):
@@ -245,54 +228,6 @@ def convert_category_input_to_string(user_input, category_list):
             user_input = category_list[i-1]
             return user_input
     
-def year_validation(user_input):
-    user_input = convert_string_to_int(user_input)
-    return user_input > 0 and user_input < 3000
-
-
-def month_validation(user_input):
-    user_input = convert_string_to_int(user_input)
-    return user_input > 0 and user_input < 13
-    
-def day_validation(user_input):
-    user_input = convert_string_to_int(user_input)
-    return user_input > 0 and user_input < 31
-
-
-def validate_user_input_CM(user_input, data_category):
-
-    if data_category == "reference":
-        variable_holding_validation_function = reference_validation
-        error_message = "Too many characters. Please try again: "
-    elif data_category == "amount":
-        variable_holding_validation_function = amount_validation
-        error_message = "Please try again: "
-    elif data_category == "category":
-        variable_holding_validation_function = category_validation
-        error_message = "Please try again: "
-    elif data_category == "year":
-        variable_holding_validation_function = year_validation
-        error_message = "Please try again: "
-    elif data_category == "month":
-        variable_holding_validation_function = month_validation
-        error_message = "Please try again: "
-    else:
-        variable_holding_validation_function = day_validation
-        error_message = "Please try again: "
-
-    while True:
-        if variable_holding_validation_function(user_input):
-            return user_input
-        else:
-            user_input = input(error_message)
-
-
-
-
-            
-
-                    
-
 
 
 # View all expenses or incomes
@@ -318,8 +253,9 @@ def format_transaction_list(list_of_transactions, income_or_expense):
         Amount: {display_amount_as_gbp(float(tuple[1]))}
         Date of transaction: {tuple[2]}'''
 
-        return formatted_expenses 
-    return f"You have recorded no {income_or_expense.lower()} in this category."
+        print(formatted_expenses)
+    if len(list_of_transactions) == 0:    
+        print(f"You have recorded no {income_or_expense.lower()} in this category.") 
 
 def display_amount_as_gbp(amount):
     pence = str(amount).split(".")[-1]
@@ -457,8 +393,7 @@ while True:
 8. View budget for a category
 9. Set financial goals
 10. View progress towards financial goals
-11. Compelete financial goals
-12. Quit
+11. Quit
 
 Enter selection: ''')
     
@@ -470,10 +405,8 @@ Enter selection: ''')
             user_input = get_valid_user_input(data_entry_header, expense_category_list)
             new_data.append(user_input)
 
-        category_name = convert_category_input_to_string(new_data[2])
-
         new_id = all_transactions[-1].id + 1
-        new_expense = Transaction(new_id, new_data[0], new_data[1], category_name, 
+        new_expense = Transaction(new_id, new_data[0], new_data[1], new_data[2], 
                                   new_data[3], new_data[4], new_data[5], True)
         all_transactions.append(new_expense)
         new_expense.create_rows(transactions_table_name, transactions_column_list)
@@ -489,8 +422,7 @@ Enter selection: ''')
     elif user_input_main_script == "3":
         user_input_category = get_valid_user_input("category", expense_category_list)
         expenses_in_category = get_transactions_by_category(transactions_table_name, user_input_category, 1)
-        message = format_transaction_list(expenses_in_category, "Expense") 
-        print(message)
+        format_transaction_list(expenses_in_category, "Expense") 
 
     # Add income
     elif user_input_main_script == "4":
@@ -632,10 +564,10 @@ Enter selection: ''')
 
 
     # Complete financial goals
-    elif user_input_main_script == "11":
-        view_financial_goals(header, all_goals)
+    # elif user_input_main_script == "11":
+    #     view_financial_goals(header, all_goals)
 
-    elif user_input_main_script == "12":
+    elif user_input_main_script == "11":
         print("Goodbye!")
         break
     
