@@ -1,64 +1,75 @@
 # A program which allows the user to search for, add, modify and delete books in the database.
 
 import sqlite3
+import os
 
 # Create books class.
-class new_book():
+class Book():
     def __init__(self, id, title, author, qty):
         self.id = id
         self.title = title
         self.author = author
         self.qty = qty
 
-    def get_book_as_tuple(self):
-        return (self.id,self.title,self.author,self.qty)
+    # def get_book_as_tuple(self):
+    #     return (self.id,self.title,self.author,self.qty)
+    
+    def create_rows(self, table_name, column_list):
+        cursor.execute(f'''INSERT INTO {table_name} ({column_list})
+                    VALUES (?,?,?,?)''', 
+                    (self.id, self.title, self.author, self.qty))
+        db.commit()
 
-database_already_exists = True
+    def get_new_id(self):
+        new_id = book_records[-1].id + 1
+        return new_id
+
+
+
+# book_records = [book1.get_book_as_tuple(), book2.get_book_as_tuple(), book3.get_book_as_tuple(), 
+#                     book4.get_book_as_tuple(), book5.get_book_as_tuple()]
+
 book_records = []
+table_already_exists = True
+
+table_name = 'ebookstore'
+column_list = "id,title,author,qty"
 
 # Create database
-try:
-    db = sqlite3.connect('ebookstore.db')
 
-    cursor = db.cursor()
+if os.path.isfile('ebookstore.db') == False:
+    table_already_exists = False
 
-    # Add columns to database.
+db = sqlite3.connect('ebookstore.db')
+
+cursor = db.cursor()
+
+if table_already_exists == False:
+    # Create table with default data.
     cursor.execute('''
         CREATE TABLE ebookstore(id INTEGER PRIMARY KEY, title TEXT UNIQUE, 
                 author VARCHAR, qty INTEGER)''')
-
+    
     db.commit()
 
-    database_already_exists = False
+    book1 = Book(3001, "A Tale of Two Cities", "Charles Dickens", 30)
+    book2 = Book(3002, "Harry Potter and the Philosopher's Stone", "J.K. Rowling", 40)
+    book3 = Book(3003, "The Lion, the Witch and the Wardrobe", "C.S. Lewis", 25)
+    book4 = Book(3004, "The Lord of the Rings", "J.R.R Tolkien", 37)
+    book5 = Book(3005, "Alice in Wonderland", "Lewis Carroll", 12)
+    book_records = [book1, book2, book3, book4, book5]
 
-except sqlite3.Error as e:
-    cursor.execute('''SELECT * FROM ebookstore''')
-    all_previous_data = cursor.fetchall()
+    for book in book_records:
+        book.create_rows(table_name, column_list)
+    print("ebookstore table successfully created.")
 
-if database_already_exists == False:
-    book1 = new_book(3001, "A Tale of Two Cities", "Charles Dickens", 30)
-    book2 = new_book(3002, "Harry Potter and the Philosopher's Stone", "J.K. Rowling", 40)
-    book3 = new_book(3003, "The Lion, the Witch and the Wardrobe", "C.S. Lewis", 25)
-    book4 = new_book(3004, "The Lord of the Rings", "J.R.R Tolkien", 37)
-    book5 = new_book(3005, "Alice in Wonderland", "Lewis Carroll", 12)
-
-    # Store data in a list of tuples.
-    book_records = [book1.get_book_as_tuple(), book2.get_book_as_tuple(), book3.get_book_as_tuple(), 
-                    book4.get_book_as_tuple(), book5.get_book_as_tuple()]
-
-    cursor.executemany('''INSERT INTO ebookstore (id, title, author, qty) 
-                    VALUES (?,?,?,?)''', book_records)
-
-    db.commit()
-
-    print(book_records)
 
 else:
-    for tuple in all_previous_data:
-        current_id = new_book.id
-        current_book = new_book(tuple[0], tuple[1], tuple[2], tuple[3])
-        book_records.append(current_book)
-    print(current_id)
+    cursor.execute(f'''SELECT * FROM ebookstore''')
+    existing_books = cursor.fetchall()
+    for tuple in existing_books:
+        book = Book(tuple[0], tuple[1], tuple[2], tuple[3])
+        book_records.append(book)
         
 
 
