@@ -7,7 +7,7 @@ import datetime
 import os.path
 
 class Transaction():
-    def __init__(self, id, reference, amount, category, 
+    def __init__(self, reference, amount, category, 
                  year, month, day, incoming):
         self.id = id
         self.reference = reference
@@ -23,8 +23,8 @@ class Transaction():
     def create_rows(self, table_name, column_list):
         formatted_date = self.format_date()
         cursor.execute(f'''INSERT INTO {table_name} ({column_list})
-                    VALUES (?,?,?,?,?,?)''', 
-                    (self.id, self.reference, self.amount, self.category, 
+                    VALUES (?,?,?,?,?)''', 
+                    (self.reference, self.amount, self.category, 
                      formatted_date, self.incoming))
         db.commit()
 
@@ -39,16 +39,20 @@ class Budget():
                     (self.category, self.amount))
         db.commit()
 
-
 class Financial_goal():
-    goal_desc = "No description"
-    complete = False
+    def __init__(self):
+        self.goal_desc = "Not set"
+        self.complete = False
+        self.id = -1
 
-    def __init__(self, goal_desc, complete):
+    def init_new(self, goal_desc):
+        self.goal_desc = goal_desc
+        
+    def init_from_db(self, id, goal_desc, complete):
+        self.id = id
         self.goal_desc = goal_desc
         self.complete = complete
-    
-    # cm: Implement this func.
+
     def set_as_complete(self):
         self.complete = True
         return True
@@ -71,8 +75,8 @@ all_goals = []
 table_already_exists = True
 
 transactions_table_name = "transactions"
-transactions_table_columns = "id INT PRIMARY KEY, reference TEXT, amount VARCHAR, category TEXT, date VARCHAR, outgoing BIT NOT NULL"
-transactions_column_list = "id,reference,amount,category,date,outgoing"
+transactions_table_columns = "reference TEXT, amount VARCHAR, category TEXT, date VARCHAR, outgoing BIT NOT NULL"
+transactions_column_list = "reference,amount,category,date,outgoing"
 expense_category_list = ["Eating out", "Groceries", "Travel", "Household", "Clothing", "Other"]
 expense_category_list_index = [0, 1, 2, 3, 4, 5]
 income_category_list = ["Salaried work", "Sold item", "Freelance work", "Reimbursement", "Gift", "Other"]
@@ -98,31 +102,30 @@ def create_table(table_name, table_columns):
     db.commit()
 
 def get_existing_data(table_name):
-    cursor.execute(f"SELECT * FROM {table_name}")
+    cursor.execute(f"SELECT ROWID, * FROM {table_name}")
     existing_data = cursor.fetchall()
     return existing_data
 
 def add_data_to_class(existing_data, class_name, list_of_objects):
+    list_of_objects = []
     if class_name == "transaction":
         for tuple in existing_data:
             date_split = tuple[4].split("/")
-            new_transaction = Transaction(tuple[0], tuple[1], tuple[2], tuple[3], 
+            new_transaction = Transaction(tuple[1], tuple[2], tuple[3],
                                           int(date_split[0]), int(date_split[1]), 
                                           int(date_split[2]), tuple[5])
             list_of_objects.append(new_transaction)
     elif class_name == "goal":
         for tuple in existing_data:
-            new_goal = Financial_goal(tuple[0], tuple[1])
+            new_goal = Financial_goal()
+            new_goal.init_from_db(tuple[0], tuple[1], tuple[2])
             list_of_objects.append(new_goal)
     else:
         for tuple in existing_data:
-            new_budget = Budget(tuple[0], tuple[1])
+            new_budget = Budget(tuple[1], tuple[2])
             list_of_objects.append(new_budget)
     return list_of_objects
 
-
-
-# Add expenses
 
 def get_user_transaction_category(list_of_transaction_categories):
     category_menu = "Please choose a category:\n"
@@ -201,20 +204,20 @@ def validate_user_input(user_input, data_category, category_list):
             except ValueError:
                 user_input = input("Please enter a number: ")
 
+
 def get_valid_user_input(data_category, category_list):
     user_input = get_user_input(data_category, category_list)
     user_input = validate_user_input(user_input, data_category, category_list)
     return user_input
 
-
-
-    
+ 
 def convert_string_to_float(user_input_string):
     try:
         return float(user_input_string)
     except:
         return None  
       
+
 def convert_string_to_int(user_input_string):
     try:
         return int(user_input_string)
@@ -229,15 +232,13 @@ def convert_category_input_to_string(user_input, category_list):
             return user_input
     
 
-
-# View all expenses or incomes
 def get_transactions(table_name, incoming_value):
     cursor.execute(f'''SELECT reference, amount, date FROM {table_name}
                     WHERE outgoing = {incoming_value}''')
     all_transactions = cursor.fetchall()
     return all_transactions
 
-# View transactions by category
+
 def get_transactions_by_category(table_name, chosen_category, incoming_value):
     cursor.execute(f'''SELECT reference, amount, date FROM {table_name}
                    WHERE category = '{chosen_category}' 
@@ -257,6 +258,7 @@ def format_transaction_list(list_of_transactions, income_or_expense):
     if len(list_of_transactions) == 0:    
         print(f"You have recorded no {income_or_expense.lower()} in this category.") 
 
+
 def display_amount_as_gbp(amount):
     pence = str(amount).split(".")[-1]
     if float(amount) == int(amount):
@@ -273,7 +275,7 @@ def display_amount_as_gbp(amount):
         
     return amount_as_gbp
 
-# Add budget
+
 def get_valid_budget_options(user_budget_type):
     while True:
         if user_budget_type not in ("1", "2"):
@@ -281,11 +283,13 @@ def get_valid_budget_options(user_budget_type):
         else:
             return user_budget_type
 
+
 def does_budget_exist_in_category(all_budgets, user_budget_category):
     for budget in all_budgets:
         if user_budget_category == budget.category:
             return budget.amount.display_amount_as_gbp()
     return False
+
 
 def get_amount_left_over(sum_of_expenses, sum_of_incomes):
     for transaction in all_transactions:
@@ -296,19 +300,23 @@ def get_amount_left_over(sum_of_expenses, sum_of_incomes):
     amount_left_over = sum_of_incomes - sum_of_expenses
     return amount_left_over
 
+
 def get_budget_percentage(user_budget_category):
     for i in range(0, len(expense_category_list)):
         if user_budget_category == expense_category_list[i]:
             budget_percentage = default_budgets_by_category[i]
             return budget_percentage
 
+
 def calculate_budget(amount_left_over, budget_percentage):
     user_budget_amount = (float(amount_left_over)/100) * budget_percentage
     return user_budget_amount
 
+
 def budget_set_message(new_budget):
     budget_as_gbp = display_amount_as_gbp(float(new_budget.amount))
     print(f"You have set your {new_budget.category} budget to {budget_as_gbp}")
+
 
 def confirm_budget_replace(user_input):
     while True:
@@ -318,19 +326,51 @@ def confirm_budget_replace(user_input):
             return False
         user_input = input("Please enter a valid option: ")
 
+
 def view_financial_goals(header, all_goals):
-    print(f'''\n\033[1m{header.center(43)}\033[0m''')
+    print(f'''\n\033[1m{header.center(43)}\033[0m\n''')
     for goal in all_goals:
         if goal.complete == False:
             is_complete = "Not complete"
         else:
             is_complete = "Complete"
-        print(f"\nGoal: {goal.goal_desc}\t{is_complete}")
+        print(f"{goal.id}: {goal.goal_desc} \t\t\t{is_complete}")
 
-goals_list_input = "Which goal have you completed?\n"
-for index, item in enumerate(all_goals, 1):
-    goals_list_input += f"\n{index}. {item}"
 
+def format_goal_list(goal_list):
+    message = f"\nWhich goal have you completed?"
+    for goal in goal_list:
+        message += f"\n{goal[0]}. {goal[1]}"
+    message += "\nEnter selection: "
+    goal_to_complete = input(message)
+    return goal_to_complete
+
+
+def get_valid_goal(goal_to_complete, goal_list):
+    while True:
+        for goal in goal_list:
+            if goal_to_complete == str(goal[0]):
+                goal_to_complete = check_if_complete(goal_to_complete)
+                return goal_to_complete
+        goal_to_complete = input("Please enter a valid number: ")
+
+
+def check_if_complete(goal_to_complete):
+    while True:
+        cursor.execute(f'''SELECT * FROM financial_goals
+                    WHERE rowid = {goal_to_complete}''')
+        goal = cursor.fetchone()
+        if goal[1] == False:
+            return goal_to_complete
+        else:
+            goal_to_complete = input("This goal is already complete. Please try again: ")
+        
+
+def set_as_complete_in_db(goal_id_to_complete):
+
+    cursor.execute(f'''UPDATE financial_goals SET complete = 1
+                   WHERE rowid = {goal_id_to_complete}''')
+    db.commit()
 
 
 # Script
@@ -347,13 +387,13 @@ if table_already_exists == False:
     create_table(transactions_table_name, transactions_table_columns)
 
     # Default expenses and income data.
-    expense1 = Transaction(1, "tshirt", 12.3, "Clothing", 2024, 4, 14, True)
-    expense2 = Transaction(2, "eggs", 2.5, "Groceries", 2024, 4, 14, True)
-    expense3 = Transaction(3, "Zizzi", 20, "Eating out", 2024, 4, 14, True)
-    expense4 = Transaction(4, "mop", 5.55, "Household", 2024, 4, 14, True)
-    income1 = Transaction(5, "SCO", 1650.0, "Salaried work", 2024, 5, 12, False)
-    income2 = Transaction(6, "Flat warming", 50.0, "Gift", 2024, 6, 13, False)
-    income3 = Transaction(7, "OFA", 3200.0, "Freelance work", 2024, 8, 12, False)
+    expense1 = Transaction("tshirt", 12.3, "Clothing", 2024, 4, 14, True)
+    expense2 = Transaction("eggs", 2.5, "Groceries", 2024, 4, 14, True)
+    expense3 = Transaction("Zizzi", 20, "Eating out", 2024, 4, 14, True)
+    expense4 = Transaction("mop", 5.55, "Household", 2024, 4, 14, True)
+    income1 = Transaction("SCO", 1650.0, "Salaried work", 2024, 5, 12, False)
+    income2 = Transaction("Flat warming", 50.0, "Gift", 2024, 6, 13, False)
+    income3 = Transaction("OFA", 3200.0, "Freelance work", 2024, 8, 12, False)
     all_transactions = [expense1, expense2, expense3, expense4, income1, income2, income3]
 
     for item in all_transactions:
@@ -393,7 +433,8 @@ while True:
 8. View budget for a category
 9. Set financial goals
 10. View progress towards financial goals
-11. Quit
+11. Set financial goal as complete
+12. Quit
 
 Enter selection: ''')
     
@@ -405,8 +446,7 @@ Enter selection: ''')
             user_input = get_valid_user_input(data_entry_header, expense_category_list)
             new_data.append(user_input)
 
-        new_id = all_transactions[-1].id + 1
-        new_expense = Transaction(new_id, new_data[0], new_data[1], new_data[2], 
+        new_expense = Transaction(new_data[0], new_data[1], new_data[2], 
                                   new_data[3], new_data[4], new_data[5], True)
         all_transactions.append(new_expense)
         new_expense.create_rows(transactions_table_name, transactions_column_list)
@@ -431,8 +471,7 @@ Enter selection: ''')
             user_input = get_valid_user_input(data_entry_header, income_category_list)
             new_data.append(user_input)
 
-        new_id = all_transactions[-1].id + 1
-        new_income = Transaction(new_id, new_data[0], new_data[1], new_data[2], 
+        new_income = Transaction(new_data[0], new_data[1], new_data[2], 
                                   new_data[3], new_data[4], new_data[5], False)
         all_transactions.append(new_income)
         new_income.create_rows(transactions_table_name, transactions_column_list)
@@ -549,7 +588,8 @@ Enter selection: ''')
                 user_goal_input = input("Please enter between 1 and 30 characters: ")
             else:
                 break
-        new_goal = Financial_goal(user_goal_input, False)
+        new_goal = Financial_goal()
+        new_goal.init_new(user_goal_input)
         is_complete = new_goal.complete
         new_goal.create_rows('financial_goals', financial_goals_column_list)
         all_goals.append(new_goal)
@@ -562,12 +602,20 @@ Enter selection: ''')
         else:
             view_financial_goals(header, all_goals)
 
-
     # Complete financial goals
-    # elif user_input_main_script == "11":
-    #     view_financial_goals(header, all_goals)
-
     elif user_input_main_script == "11":
+        existing_goal_data = get_existing_data('financial_goals')
+        # Get valid goal to set as complete.
+        goal_to_complete = format_goal_list(existing_goal_data)
+        goal_to_complete = get_valid_goal(goal_to_complete, existing_goal_data)
+        set_as_complete_in_db(goal_to_complete)
+        all_goals = add_data_to_class(existing_goal_data, "goal", all_goals)
+        # Set as complete in class object
+        for goal in all_goals:
+            if int(goal_to_complete) == goal.id:
+                goal.set_as_complete()
+
+    elif user_input_main_script == "12":
         print("Goodbye!")
         break
     
