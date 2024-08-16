@@ -12,8 +12,13 @@ error_message = "Please try again."
 ask_for_number = "Please enter a number: "
 not_an_int_message = "This is not a valid number. "
 ask_for_another_number = "Please enter another number: "
-# CM: Change this to match other input format.
-ask_for_operation = "\nWould you like to add(+), subtract(-), multiply(*) or divide(/)? "
+ask_for_operation = '''\nPlease choose an option:
+    + add
+    - subtract
+    * multiply
+    / divide
+
+Enter selection: '''
 operation_error = "Please enter a valid mathematical operation."
 alternative_num_message = "Please enter a different number to divide by: "
 run_calculator = True
@@ -50,45 +55,44 @@ def get_operation_input(question, error_message):
         match user_operation:
             case "+":
                 print("You have selected addition.")
-                addition_func(user_number_a, user_number_b, user_operation)
+                addition_func(user_number_a, user_number_b)
                 return user_operation
             case "-":
                 print("You have selected subtraction.")
-                subtraction_func(user_number_a, user_number_b, user_operation)
+                subtraction_func(user_number_a, user_number_b)
                 return user_operation
             case "*":
                 print("You have selected multiplication.")
-                multiply_func(user_number_a, user_number_b, user_operation)
+                multiply_func(user_number_a, user_number_b)
                 return user_operation
             case "/":
                 print("You have selected division.")
-                divide_func(user_number_a, user_number_b, user_operation)
+                divide_func(user_number_a, user_number_b)
                 return user_operation
             case _:
                 print(error_message)
 
-# CM: Remove user_operation and hard code it in each func
 # Functions to perform mathematical operations.
-def addition_func(user_number_a, user_number_b, user_operation="+"):
+def addition_func(user_number_a, user_number_b):
     answer = user_number_a + user_number_b
-    print_equation(answer, user_operation, user_number_a, user_number_b)
+    print_equation(answer, "+", user_number_a, user_number_b)
 
-def subtraction_func(user_number_a, user_number_b, user_operation="-"):
+def subtraction_func(user_number_a, user_number_b):
     answer = user_number_a - user_number_b
-    print_equation(answer, user_operation, user_number_a, user_number_b)
+    print_equation(answer, "-", user_number_a, user_number_b)
 
 
-def multiply_func(user_number_a, user_number_b, user_operation="*"):
+def multiply_func(user_number_a, user_number_b):
     answer = user_number_a * user_number_b
-    print_equation(answer, user_operation, user_number_a, user_number_b)
+    print_equation(answer, "*", user_number_a, user_number_b)
 
-def divide_func(user_number_a, user_number_b, user_operation="/"):
+def divide_func(user_number_a, user_number_b):
     # While loop to prevent error if user tries to divide by 0.
     while user_number_b == 0:
         print("You cannot divide by 0")
         user_number_b = get_number_input(alternative_num_message, not_an_int_message)
     answer = user_number_a / user_number_b
-    print_equation(answer, user_operation, user_number_a, user_number_b)
+    print_equation(answer, "/", user_number_a, user_number_b)
     
 # Prints users equation.
 def print_equation(answer, user_operation, user_number_a, user_number_b):
