@@ -1,4 +1,4 @@
-    
+# CM: Don't include 'func' as a suffix, we know it's a function.    
 def dob_database_manager_func():
 
     import datetime
@@ -14,6 +14,7 @@ def dob_database_manager_func():
             is_file_open = False
         return is_file_open
 
+    # CM: The name of this function should be more descriptive.
     # Define function to find data and return as list..
     def find_function():
         while True:
@@ -172,6 +173,7 @@ def dob_database_manager_func():
                 case _:
                     print("\nYou did not enter a valid option.")
 
+        # CM: Remove these.
         #function GetUserStringInput (string question)
         #   ask question
         #   get valid user input (while loop)

@@ -1,3 +1,4 @@
+# CM: Change the function name to describe what it does. E.g. run_task_manager. Do this in other scripts too.
 def task_manager_func(username):
     import datetime 
 
