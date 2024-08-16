@@ -2,8 +2,13 @@
 # The user can view all previous calculations stored in the text file.
 
 # Variable list.
-perform_or_view_message = "Would you like to perform a calculation(1) or view previous calculations(2) or exit the programme(e)? "
-error_message = "Please enter either 1 or 2 or e."
+perform_or_view_message = '''\nPlease choose an option:
+    1 - Perform a calculation
+    2 - View previous calculations
+    e - Exit
+
+Enter selection: '''
+error_message = "Please try again."
 ask_for_number = "Please enter a number: "
 not_an_int_message = "This is not a valid number. "
 ask_for_another_number = "Please enter another number: "
@@ -20,7 +25,7 @@ def user_perform_or_view(question, error_message):
             print("You have selected the 'perform calculation' option.\n")
             return user_input
         elif user_input == "2":
-            print("Here are your previous calculations:\n")
+            print("\nPrevious calculations:\n")
             return user_input
         elif user_input.lower() == "e":
             return user_input.lower()
@@ -118,7 +123,7 @@ def read_txt_file():
             f.close()
 
 # Programme script.
-print("\nThis programme will allow you to perform calculations, view previous calculations.")
+print("\nThis programme will allow you to perform calculations or view previous calculations.")
 
 while run_calculator == True:
     user_input = user_perform_or_view(perform_or_view_message, error_message)
@@ -129,6 +134,7 @@ while run_calculator == True:
     elif user_input == "2":
         read_txt_file()
     else:
+        print("\nGoodbye!")
         run_calculator = False
 
 
