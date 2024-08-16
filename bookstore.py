@@ -10,9 +10,6 @@ class Book():
         self.title = title
         self.author = author
         self.qty = qty
-
-    # def get_book_as_tuple(self):
-    #     return (self.id,self.title,self.author,self.qty)
     
     def create_rows(self, table_name, column_list):
         cursor.execute(f'''INSERT INTO {table_name} ({column_list})
@@ -24,10 +21,6 @@ class Book():
         new_id = book_records[-1].id + 1
         return new_id
 
-
-
-# book_records = [book1.get_book_as_tuple(), book2.get_book_as_tuple(), book3.get_book_as_tuple(), 
-#                     book4.get_book_as_tuple(), book5.get_book_as_tuple()]
 
 book_records = []
 table_already_exists = True
@@ -94,7 +87,7 @@ get_user_search_option = '''\nPlease select a category to search by:
 # Create an id for new book entry (add one to previous book id).
 def generate_new_id(book_records):
     last_record = book_records[-1]
-    last_record_id = last_record[0]
+    last_record_id = last_record.id
     new_record_id = last_record_id + 1
     return new_record_id
         
@@ -129,7 +122,7 @@ def get_valid_id(input_message):
         try:
             user_id_input_as_int = int(user_id_input)
             for i in range(0, len(book_records)):
-                if user_id_input_as_int == book_records[i][0]:
+                if user_id_input_as_int == book_records[i].id:
                     is_id_in_db = True
                     valid_id = user_id_input_as_int
                     return valid_id
@@ -166,8 +159,11 @@ def get_user_edit_or_search_option(user_edit_or_search_input_prompt):
 def is_new_qty_int(new_qty_input):
     while True:
         try:
-            new_qty_input_cast = int(new_qty_input)
-            return new_qty_input_cast
+            new_qty_input = int(new_qty_input)
+            if new_qty_input > -1:
+                return new_qty_input
+            else:
+                new_qty_input = input("Please enter a positive number: ")
         except ValueError:
             new_qty_input = input("Please enter a number: ")
 
@@ -186,8 +182,8 @@ def update_book(user_edit_option, new_user_data, valid_id):
 
 def confirm_book_in_question(valid_id):
     for i in range(0, len(book_records)):
-        if valid_id == book_records[i][0]:
-            title_in_question = book_records[i][1]
+        if valid_id == book_records[i].id:
+            title_in_question = book_records[i].title
             return title_in_question
         
 
@@ -208,14 +204,17 @@ def search_books(user_search_input, user_search_by_option):
     user_search_result = cursor.fetchall()
     return user_search_result
 
+
 def display_book_details(user_search_result):
     if user_search_result == []:
         print("\nNo results.")
     else:
-        print(f'''\n\tBook ID: {user_search_result[0]}
-    Book Title: {user_search_result[1]}
-    Book Author: {user_search_result[2]}
-    Book Quantity: {user_search_result[3]}''')
+        for book in user_search_result:
+            print(f'''
+    Book ID: {book[0]}
+    Book Title: {book[1]}
+    Book Author: {book[2]}
+    Book Quantity: {book[3]}''')
 
 
 
@@ -223,7 +222,7 @@ def display_book_details(user_search_result):
 while True:
     user_input = input('''\n        Main Menu
 \nPlease select an option:
-    1. Enter book
+    1. Enter new book
     2. Update book
     3. Delete book
     4. Search books
@@ -238,11 +237,10 @@ while True:
         new_author = get_author_from_user()
         new_qty_cast = get_qty_from_user(new_title)
         
-        # Add new book details to database
-        cursor.execute('''INSERT INTO ebookstore(id,title,author,qty)
-                       VALUES(?,?,?,?)''', 
-                       (new_record_id,new_title,new_author,new_qty_cast))
-        db.commit()
+        # Add to class
+        new_book = Book(new_record_id,new_title,new_author,new_qty_cast)
+        new_book.create_rows(table_name, column_list)
+        book_records.append(new_book)
 
         print(f"\n{new_title} has been added to the database!")
 
@@ -298,7 +296,7 @@ while True:
                 user_search_input = is_new_qty_int(user_search_input) 
             # Select books in the database matching users criteria and print.
             user_search_result = search_books(user_search_input, user_search_by_option)
-            display_book_details(user_search_result[0])
+            display_book_details(user_search_result)
 
 
     elif user_input == "0":
