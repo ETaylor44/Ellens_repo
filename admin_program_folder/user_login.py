@@ -44,7 +44,7 @@ def get_user_input(error_message):
     dob - enter date of birth database manager
     l - logout
                            
-    Enter selection: ''').lower()
+Enter selection: ''').lower()
         if user_input == "v" or user_input == "tm" or user_input == "dob" or user_input == "l":
             return user_input
         else:

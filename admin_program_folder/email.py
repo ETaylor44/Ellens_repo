@@ -36,9 +36,9 @@ def email_programme_function():
 
 
     def read_email(index):
-        print(f"\nEmail Sender:\t{inbox_list[index].email_address}")
-        print(f"Subject Line:\t{inbox_list[index].subject_line}")
-        print(f"Email Content:\t{inbox_list[index].email_content}")
+        print(f"\nEmail Sender:\t{inbox_list[index-1].email_address}")
+        print(f"Subject Line:\t{inbox_list[index-1].subject_line}")
+        print(f"Email Content:\t{inbox_list[index-1].email_content}")
         inbox_list[index].has_been_read = True
 
 
@@ -73,7 +73,7 @@ def email_programme_function():
     v - view unread emails
     e - exit 
 
-    Enter selection: ''')
+Enter selection: ''')
         
         if user_choice == "r":
             # Call function to get valid user input.
