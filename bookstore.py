@@ -84,6 +84,7 @@ get_user_search_option = '''\nPlease select a category to search by:
                            
     Enter selection: '''
 
+# CM: This is duplicated in the books class.
 # Create an id for new book entry (add one to previous book id).
 def generate_new_id(book_records):
     last_record = book_records[-1]
@@ -91,12 +92,13 @@ def generate_new_id(book_records):
     new_record_id = last_record_id + 1
     return new_record_id
         
-        
+# CM: I don't think this function is needed.
 def get_title_from_user():
     new_title = input("\nPlease enter a book title: ")
     return new_title
 
 
+# CM: I don't think this function is needed.
 def get_author_from_user():
     new_author = input("Please enter an author: ")
     return new_author
@@ -111,6 +113,7 @@ def get_qty_from_user(new_title):
         except ValueError:
             print("Please enter a number.")
 
+#CM: What is this?
 def add_new_book_to_book_records(last_book_record_id):
     last_book_record_id
             
@@ -131,7 +134,7 @@ def get_valid_id(input_message):
         except ValueError:
             print("Please enter a number.")
 
-
+# CM: Store options in a list. 
 def get_user_edit_or_search_option(user_edit_or_search_input_prompt):
     while True:
         user_edit_or_search_option = input(user_edit_or_search_input_prompt)
