@@ -3,7 +3,7 @@
 import sqlite3
 import os
 
-# Create books class.
+# Create Book class.
 class Book():
     def __init__(self, id, title, author, qty):
         self.id = id
@@ -17,56 +17,14 @@ class Book():
                     (self.id, self.title, self.author, self.qty))
         db.commit()
 
-    def get_new_id(self):
-        new_id = book_records[-1].id + 1
-        return new_id
-
-
+# Variables.
 book_records = []
 table_already_exists = True
 
 table_name = 'ebookstore'
 column_list = "id,title,author,qty"
+input_options = ["title", "author", "qty", "exit"]
 
-# Create database
-
-if os.path.isfile('ebookstore.db') == False:
-    table_already_exists = False
-
-db = sqlite3.connect('ebookstore.db')
-
-cursor = db.cursor()
-
-if table_already_exists == False:
-    # Create table with default data.
-    cursor.execute('''
-        CREATE TABLE ebookstore(id INTEGER PRIMARY KEY, title TEXT UNIQUE, 
-                author VARCHAR, qty INTEGER)''')
-    
-    db.commit()
-
-    book1 = Book(3001, "A Tale of Two Cities", "Charles Dickens", 30)
-    book2 = Book(3002, "Harry Potter and the Philosopher's Stone", "J.K. Rowling", 40)
-    book3 = Book(3003, "The Lion, the Witch and the Wardrobe", "C.S. Lewis", 25)
-    book4 = Book(3004, "The Lord of the Rings", "J.R.R Tolkien", 37)
-    book5 = Book(3005, "Alice in Wonderland", "Lewis Carroll", 12)
-    book_records = [book1, book2, book3, book4, book5]
-
-    for book in book_records:
-        book.create_rows(table_name, column_list)
-    print("ebookstore table successfully created.")
-
-
-else:
-    cursor.execute(f'''SELECT * FROM ebookstore''')
-    existing_books = cursor.fetchall()
-    for tuple in existing_books:
-        book = Book(tuple[0], tuple[1], tuple[2], tuple[3])
-        book_records.append(book)
-        
-
-
-# Variables
 get_id_to_update_book = "\nPlease enter the ID of the book to update: "
 get_id_to_delete_book = "\nPlease enter the ID of the book to delete: "
 get_user_edit_option = '''\nWhich data category would you like to edit?
@@ -83,25 +41,13 @@ get_user_search_option = '''\nPlease select a category to search by:
     4. Cancel
                            
     Enter selection: '''
-
-# CM: This is duplicated in the books class.
-# Create an id for new book entry (add one to previous book id).
-def generate_new_id(book_records):
-    last_record = book_records[-1]
-    last_record_id = last_record.id
-    new_record_id = last_record_id + 1
-    return new_record_id
         
-# CM: I don't think this function is needed.
-def get_title_from_user():
-    new_title = input("\nPlease enter a book title: ")
-    return new_title
 
-
-# CM: I don't think this function is needed.
-def get_author_from_user():
-    new_author = input("Please enter an author: ")
-    return new_author
+# Create an id for new book entry (add one to previous book id).
+def get_new_id(book_records):
+    last_record = book_records[-1]
+    new_record_id = last_record.id + 1
+    return new_record_id
 
 
 def get_qty_from_user(new_title):
@@ -112,10 +58,6 @@ def get_qty_from_user(new_title):
             return new_qty_as_int
         except ValueError:
             print("Please enter a number.")
-
-#CM: What is this?
-def add_new_book_to_book_records(last_book_record_id):
-    last_book_record_id
             
 
 def get_valid_id(input_message):
@@ -134,29 +76,17 @@ def get_valid_id(input_message):
         except ValueError:
             print("Please enter a number.")
 
-# CM: Store options in a list. 
+
 def get_user_edit_or_search_option(user_edit_or_search_input_prompt):
     while True:
         user_edit_or_search_option = input(user_edit_or_search_input_prompt)
 
-        if user_edit_or_search_option == "1":
-            user_edit_or_search_option = "title"
-            return user_edit_or_search_option
+        for i in range(0, len(input_options)):
+            if user_edit_or_search_option == str(i+1):
+                user_edit_or_search_option = input_options[i]
+                return user_edit_or_search_option
         
-        elif user_edit_or_search_option == "2":
-            user_edit_or_search_option = "author"
-            return user_edit_or_search_option
-        
-        elif user_edit_or_search_option == "3":
-            user_edit_or_search_option = "qty"
-            return user_edit_or_search_option
-        
-        elif user_edit_or_search_option == "4":
-            user_edit_or_search_option = 4
-            return user_edit_or_search_option
-        
-        else:
-            print("\nPlease enter a valid option.")
+        print("\nPlease enter a valid option.")
 
 # Get a valid number for qty data category.
 def is_new_qty_int(new_qty_input):
@@ -220,6 +150,39 @@ def display_book_details(user_search_result):
     Book Quantity: {book[3]}''')
 
 
+# Create database.
+if os.path.isfile('ebookstore.db') == False:
+    table_already_exists = False
+
+db = sqlite3.connect('ebookstore.db')
+
+cursor = db.cursor()
+
+if table_already_exists == False:
+    # Create table with default data.
+    cursor.execute('''
+        CREATE TABLE ebookstore(id INTEGER PRIMARY KEY, title TEXT UNIQUE, 
+                author VARCHAR, qty INTEGER)''')
+    
+    db.commit()
+
+    book1 = Book(3001, "A Tale of Two Cities", "Charles Dickens", 30)
+    book2 = Book(3002, "Harry Potter and the Philosopher's Stone", "J.K. Rowling", 40)
+    book3 = Book(3003, "The Lion, the Witch and the Wardrobe", "C.S. Lewis", 25)
+    book4 = Book(3004, "The Lord of the Rings", "J.R.R Tolkien", 37)
+    book5 = Book(3005, "Alice in Wonderland", "Lewis Carroll", 12)
+    book_records = [book1, book2, book3, book4, book5]
+
+    for book in book_records:
+        book.create_rows(table_name, column_list)
+    print("ebookstore table successfully created.")
+
+else:
+    cursor.execute(f'''SELECT * FROM ebookstore''')
+    existing_books = cursor.fetchall()
+    for tuple in existing_books:
+        book = Book(tuple[0], tuple[1], tuple[2], tuple[3])
+        book_records.append(book)
 
 # Main script.
 while True:
@@ -232,12 +195,12 @@ while True:
     0. Exit
 
     Enter selection: ''')
-    # Enter book
+    # Enter new book
     if user_input == "1":
         # Get new book details.
-        new_record_id = generate_new_id(book_records)
-        new_title = get_title_from_user()
-        new_author = get_author_from_user()
+        new_record_id = get_new_id(book_records)
+        new_title = input("\nPlease enter a book title: ")
+        new_author = input("Please enter an author: ")
         new_qty_cast = get_qty_from_user(new_title)
         
         # Add to class
