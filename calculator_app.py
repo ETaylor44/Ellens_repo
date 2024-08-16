@@ -12,6 +12,7 @@ error_message = "Please try again."
 ask_for_number = "Please enter a number: "
 not_an_int_message = "This is not a valid number. "
 ask_for_another_number = "Please enter another number: "
+# CM: Change this to match other input format.
 ask_for_operation = "\nWould you like to add(+), subtract(-), multiply(*) or divide(/)? "
 operation_error = "Please enter a valid mathematical operation."
 alternative_num_message = "Please enter a different number to divide by: "
@@ -66,6 +67,7 @@ def get_operation_input(question, error_message):
             case _:
                 print(error_message)
 
+# CM: Remove user_operation and hard code it in each func
 # Functions to perform mathematical operations.
 def addition_func(user_number_a, user_number_b, user_operation="+"):
     answer = user_number_a + user_number_b
