@@ -1,5 +1,5 @@
     
-def email_programme_function():
+def run_emails():
     # Define class, method and create attributes.
     class Email():
         has_been_read = False

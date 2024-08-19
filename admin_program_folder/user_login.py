@@ -67,12 +67,12 @@ if user_input == "v":
 
 elif user_input == "tm":
     user_selection = "enter task manager."
-    task_manager.task_manager_func(username_password[0])
+    task_manager.run_task_manager(username_password[0])
     user_input = get_user_input(error_message_two)
 
 elif user_input == "dob":
     user_selection = "enter date of birth database manager."
-    dob_database_manager.dob_database_manager_func()
+    dob_database_manager.run_dob_database_manager()
     user_input = get_user_input(error_message_two)
 
 else:
