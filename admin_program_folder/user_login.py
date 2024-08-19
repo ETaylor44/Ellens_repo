@@ -62,7 +62,7 @@ user_input = get_user_input(error_message_two)
 
 if user_input == "v":
     user_selection = "view emails."
-    email.email_programme_function()
+    email.run_emails()
     user_input = get_user_input(error_message_two)
 
 elif user_input == "tm":
@@ -76,6 +76,6 @@ elif user_input == "dob":
     user_input = get_user_input(error_message_two)
 
 else:
-    exit_message = print("\nGoodbye!")
+    print("\nGoodbye!")
 
     

@@ -224,6 +224,5 @@ Please try again: ''')
                 print("\nYou did not enter a valid option.")
 
 
-run_dob_database_manager()
 
 
