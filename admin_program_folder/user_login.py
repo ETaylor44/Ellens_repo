@@ -39,13 +39,13 @@ def read_txt_file(username_input, password_input, error_message):
 def get_user_input(error_message):
     while True:
         user_input = input('''\n\033[0mSelect one of the following options:
-    v - view emails
-    tm - enter task manager
-    dob - enter date of birth database manager
-    l - logout
+    1. view emails
+    2. enter task manager
+    3. enter date of birth database manager
+    4. logout
                            
 Enter selection: ''').lower()
-        if user_input == "v" or user_input == "tm" or user_input == "dob" or user_input == "l":
+        if user_input == "1" or user_input == "2" or user_input == "3" or user_input == "4":
             return user_input
         else:
             print(error_message)
@@ -60,17 +60,17 @@ read_txt_file(username_password[0], username_password[1], error_message)
 print("\n\033[1mMain Menu")
 user_input = get_user_input(error_message_two)
 
-if user_input == "v":
+if user_input == "1":
     user_selection = "view emails."
     email.run_emails()
     user_input = get_user_input(error_message_two)
 
-elif user_input == "tm":
+elif user_input == "2":
     user_selection = "enter task manager."
     task_manager.run_task_manager(username_password[0])
     user_input = get_user_input(error_message_two)
 
-elif user_input == "dob":
+elif user_input == "3":
     user_selection = "enter date of birth database manager."
     dob_database_manager.run_dob_database_manager()
     user_input = get_user_input(error_message_two)
