@@ -589,9 +589,16 @@ Enter selection: ''')
             else:
                 break
         new_goal = Financial_goal()
+        # Initialize new goal.
         new_goal.init_new(user_goal_input)
         is_complete = new_goal.complete
+        # Insert into financial_goals table.
         new_goal.create_rows('financial_goals', financial_goals_column_list)
+        # Get rowid of new goal.
+        cursor.execute('''SELECT last_insert_rowid() FROM financial_goals''')
+        new_id = cursor.fetchone()
+        # Pass rowid into financial_goals class.
+        new_goal.init_from_db(new_id[0], user_goal_input, is_complete)
         all_goals.append(new_goal)
         print("New goal set.")
 
