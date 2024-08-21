@@ -18,23 +18,21 @@ def get_username_password_input(username_input_prompt, password_input_prompt):
         return username_input, password_input
 
 # Read user.txt to see if username and password match existing ones.
-def read_txt_file(username_input, password_input, error_message):
-    f = None
-    try: 
-        with open("user.txt", "r", encoding='utf-8') as f:
-            all_data = f.readlines()
-            for line in all_data:
-                data_as_list = line.split(", ")
-                if data_as_list[0] == username_input and data_as_list[1].strip("\n") == password_input:
-                    return username_input, password_input
-            # If no match, recall get_username_password_input function.
-            print(error_message)
-            return get_username_password_input(username_prompt, password_prompt)
-    except FileNotFoundError:
-        print("Please open the user text file.")
-    finally:
-        if f is not None:
-            f.close()
+def get_valid_username_password(username_input_prompt, password_input_prompt, error_message):
+    while True:
+        username_password = get_username_password_input(username_input_prompt, password_input_prompt)
+        try: 
+            with open("user.txt", "r", encoding='utf-8') as f:
+                all_data = f.readlines()
+                for line in all_data:
+                    data_as_list = line.split(", ")
+                    if data_as_list[0] == username_password[0] and data_as_list[1].strip("\n") == username_password[1]:
+                        return username_password[0], username_password[1]
+                # If no match, recall get_username_password_input function.
+                print(error_message)
+        except FileNotFoundError:
+            print("Please open the user text file.")
+
 
 def get_user_input(error_message):
     while True:
@@ -53,8 +51,7 @@ Enter selection: ''').lower()
 
 # Script.  
 # Get valid username and password from user.               
-username_password = get_username_password_input(username_prompt, password_prompt)
-read_txt_file(username_password[0], username_password[1], error_message)
+get_valid_username_password(username_prompt, password_prompt, error_message)
 
 # Display menu and get valid user input.
 print("\n\033[1mMain Menu")

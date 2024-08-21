@@ -94,7 +94,6 @@ Enter selection: ''')
         else:
             print("\nOops - Please try again.")
 
-run_emails()
 
 
 
