@@ -6,12 +6,14 @@ def run_dob_database_manager():
 
     month_list = ["January", "February", "March", "April", "May", "June", 
                 "July", "August", "September", "October", "November", "December"]
-    main_menu_list = ["find information", "add information", "remove information", "exit"]
+    main_menu_list = ["find information", "add information", "modify information", "remove information", "exit"]
     find_menu_list = ["full name", "date of birth", "initials", "age", "all details", "cancel"]
     data_headers = ["first name", "surname", "day", "month", "year"]
     yes_or_no = ["Yes", "No"]
 
     menu_output = "\nPlease choose an option:"
+    modify_menu_first_line = "\nPlease choose a category to edit: "
+
     
     def is_csv_open():
         if(os.path.isfile("dob.csv")):
@@ -115,6 +117,15 @@ Please try again: ''')
             if i+1 == entry_data:
                 entry_data = month_list[i]
                 return entry_data
+            
+
+    def validate_menu_choice(edit_menu_choice_as_int, data_headers):
+        while True:
+            for i in range(1, len(data_headers)):
+                if edit_menu_choice_as_int == i:
+                    edit_menu_choice_as_string = data_headers[i-1]
+                    return edit_menu_choice_as_string
+            edit_menu_choice_as_int = int(input("Please enter a valid number: "))
 
 
     def add_to_csv(row_dict):
@@ -122,6 +133,15 @@ Please try again: ''')
             writer = csv.DictWriter(csv_file, fieldnames=data_headers)
             writer.writerow(row_dict)
         print("\nNew data added to the database!")
+
+    def write_csv():
+        with open("dob.csv", "w") as csv_file:
+            writer = csv.DictWriter(csv_file, fieldnames=data_headers)
+            writer.writeheader()
+            for row in data_from_file:
+                writer.writerow(row)
+
+    
 
 
 # Script.
@@ -181,9 +201,29 @@ Please try again: ''')
                 new_row_dict = get_details_to_add(data_headers)
                 add_to_csv(new_row_dict)
 
+            # Modify information.
+            elif user_input == "3":
+                name_input = input("\nEnter the first name of the person whose information to edit: ")
+                all_details = get_valid_name(name_input)
+
+                edit_menu_choice_as_int = int(get_menu_choice(data_headers, modify_menu_first_line))
+                edit_menu_choice_as_string = validate_menu_choice(edit_menu_choice_as_int, data_headers)
+
+                new_data = input(f"Please enter a new {edit_menu_choice_as_string}: ")
+                new_data = is_entry_valid(new_data, edit_menu_choice_as_string)
+
+                data_from_file = []
+                with open("dob.csv", "r") as csv_file:
+                    file_reader = csv.DictReader(csv_file)
+                    for row in file_reader:
+                        if row["first name"].lower() == all_details["first name"].lower():
+                            row[edit_menu_choice_as_string] = new_data
+                        data_from_file.append(row)
+
+                write_csv()
 
                 # Remove details.
-            elif user_input == "3":
+            elif user_input == "4":
                 name_input = input("\nEnter the first name of the person whose information to remove: ")
                 all_details = get_valid_name(name_input)
 
@@ -200,28 +240,24 @@ Please try again: ''')
                         with open("dob.csv", mode="r") as csv_file:
                             file_reader = csv.DictReader(csv_file)
                             for row in file_reader:
-                                data_from_file.append(row)
-
-
-                        with open("dob.csv", "w") as csv_file:
-                            writer = csv.DictWriter(csv_file, fieldnames=data_headers)
-                            writer.writeheader()
-                            for row in data_from_file:
                                 if row["first name"].lower() != all_details["first name"].lower():
-                                    writer.writerow(row)
+                                    data_from_file.append(row)
 
+                        write_csv()
+                            
                         print(f"\n{full_name} has been removed from the database.")
                         break
                     else:
                         print(f"\n{full_name} has not been removed from the database.")
                         break
                 
-            elif user_input == "4":
+            elif user_input == "5":
                 print("\nGoodbye!.")
                 break
                             
             else:
                 print("\nYou did not enter a valid option.")
+
 
 
 
