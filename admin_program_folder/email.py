@@ -30,7 +30,7 @@ def run_emails():
         for email in inbox_list:
             subject = email.subject_line
             subject_list.append(subject)
-            print(index, subject)
+            print(f"{index}. {subject}")
             index += 1
         return subject_list
 
@@ -39,7 +39,7 @@ def run_emails():
         print(f"\nEmail Sender:\t{inbox_list[index-1].email_address}")
         print(f"Subject Line:\t{inbox_list[index-1].subject_line}")
         print(f"Email Content:\t{inbox_list[index-1].email_content}")
-        inbox_list[index].has_been_read = True
+        inbox_list[index-1].has_been_read = True
 
 
     def get_user_input(prompt_message):
@@ -50,7 +50,7 @@ def run_emails():
             try:
                 user_input_as_num = int(user_input)
                 # Check whether user_number corresponds to any of the emails in inbox.
-                for i in range(0, len(subject_list)):
+                for i in range(0, len(subject_list)+1):
                     if i == user_input_as_num:
                         is_number_an_email = True
                         return user_input_as_num
@@ -69,30 +69,32 @@ def run_emails():
 
     while True:
         user_choice = input('''\nWould you like to:
-    r - read an email
-    v - view unread emails
-    e - exit 
+    1. read an email
+    2. view unread emails
+    3. exit 
 
 Enter selection: ''')
         
-        if user_choice == "r":
+        if user_choice == "1":
             # Call function to get valid user input.
             user_input = get_user_input(prompt_message)
             read_email(user_input)
             
-        elif user_choice == "v":
+        elif user_choice == "2":
             print("\nUnread Emails:")
             # Identify emails which are unread and print subject lines.
             for index in range(0, len(inbox_list)):
                 if inbox_list[index].has_been_read != True:
                     print(inbox_list[index].subject_line)
                 
-        elif user_choice == "e":
+        elif user_choice == "3":
             print("\nGoodbye!")
             return 
 
         else:
             print("\nOops - Please try again.")
+
+run_emails()
 
 
 
