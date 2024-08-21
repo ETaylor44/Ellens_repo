@@ -28,7 +28,6 @@ def get_valid_username_password(username_input_prompt, password_input_prompt, er
                     data_as_list = line.split(", ")
                     if data_as_list[0] == username_password[0] and data_as_list[1].strip("\n") == username_password[1]:
                         return username_password[0], username_password[1]
-                # If no match, recall get_username_password_input function.
                 print(error_message)
         except FileNotFoundError:
             print("Please open the user text file.")
@@ -51,7 +50,7 @@ Enter selection: ''').lower()
 
 # Script.  
 # Get valid username and password from user.               
-get_valid_username_password(username_prompt, password_prompt, error_message)
+username_password = get_valid_username_password(username_prompt, password_prompt, error_message)
 
 # Display menu and get valid user input.
 print("\n\033[1mMain Menu")
