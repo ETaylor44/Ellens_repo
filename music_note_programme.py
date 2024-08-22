@@ -197,40 +197,57 @@ def create_chords(user_note, note_list, is_major_key):
         
 
 # Script:
-#1 riff
-print("This programme will generate random notes to create a riff.")
-user_input = get_numeric_input(user_number_of_notes, not_a_number_statement)
-initialse_riff(riff, sharp_notes, user_input)
-print_notes_horizontal_on_stave(riff, natural_notes, stave_line, stave_space)
+while True:
+    menu_user_input = input('''\nMain Menu
+                       
+1. Create riff
+2. Construct a key
+3. Construct a triad
+4. Exit
+                       
+Enter selection: ''')
+    if menu_user_input == "1":
+        #1 riff
+        print("This programme will generate random notes to create a riff.")
+        user_input = get_numeric_input(user_number_of_notes, not_a_number_statement)
+        initialse_riff(riff, sharp_notes, user_input)
+        print_notes_horizontal_on_stave(riff, natural_notes, stave_line, stave_space)
+        
+    elif menu_user_input == "2":
+        #2 scale
+        print("\nThis programme will generate the notes of any major or minor key.")
+        user_note = get_note_input(starting_note_for_key, invalid_note_message)
+        user_input_note_index = get_note_index_in_list(user_note)
+        list_of_notes = convert_user_note_to_list(user_note, list_of_notes)
+        check_for_sharp(list_of_notes)
 
-#2 scale
-print("\nThis programme will generate the notes of any major or minor key.")
-user_note = get_note_input(starting_note_for_key, invalid_note_message)
-user_input_note_index = get_note_index_in_list(user_note)
-list_of_notes = convert_user_note_to_list(user_note, list_of_notes)
-check_for_sharp(list_of_notes)
+        call_triad_func = False
+        is_major_key = get_user_input_maj_min(user_key_prompt, invalid_key_message)
 
-call_triad_func = False
-is_major_key = get_user_input_maj_min(user_key_prompt, invalid_key_message)
+        if call_triad_func == False:
+            new_key = create_key(user_input_note_index, sharp_notes, is_major_key, user_note)
 
-if call_triad_func == False:
-    new_key = create_key(user_input_note_index, sharp_notes, is_major_key, user_note)
+        print_notes_horizontal_on_stave(new_key, natural_notes, stave_line, stave_space)
 
-print_notes_horizontal_on_stave(new_key, natural_notes, stave_line, stave_space)
+    elif menu_user_input == "3":
+        # 3 Triad 
+        print("\nThis programme will construct a Major or Minor triad.")
 
+        user_input = get_note_input(starting_note_for_triad, invalid_note_message)
 
-# 3 Triad 
-print("\nThis programme will construct a Major or Minor triad.")
+        call_triad_func = True
+        is_major_key = get_user_input_maj_min(user_key_prompt, invalid_key_message)
 
-user_input = get_note_input(starting_note_for_triad, invalid_note_message)
+        if call_triad_func == True:
+            triad = create_chords(user_input, sharp_notes, is_major_key)
 
-call_triad_func = True
-is_major_key = get_user_input_maj_min(user_key_prompt, invalid_key_message)
+        check_for_sharp(triad)
 
-if call_triad_func == True:
-    triad = create_chords(user_input, sharp_notes, is_major_key)
+    elif menu_user_input == "4":
+        print("Goodbye!")
 
-check_for_sharp(triad)
+    else:
+        print("Please enter a valid input.")
 
 
 
