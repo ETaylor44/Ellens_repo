@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Xml.Linq;
 
 namespace reading_csvs
 {
@@ -300,19 +301,57 @@ namespace reading_csvs
     
         private void editButton_Click(object sender, EventArgs e)
         {
-            Button parsedSender = (Button)sender;
-            parsedSender.Click -= editButton_Click;
-            parsedSender.Click += saveButton_Click;
-            parsedSender.Text = "Save";
+            Button SenderButton = (Button)sender;
+            SenderButton.Click -= editButton_Click;
+            SenderButton.Click += saveButton_Click;
+            SenderButton.Text = "Save";
+            string name = SenderButton.Name;
+            for (int i = 0; i < listOfEditButtons.Count; i++)
+            {
+                if (listOfEditButtons[i].Name == name)
+                {
+                    foreach (TextBox box in listOfTextBoxGroups[i])
+                    {
+                        box.ReadOnly = false;
+                    }
+                    
+                }
+            }
 
         }
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            Button parsedSender = (Button)sender;
-            parsedSender.Click -= saveButton_Click;
-            parsedSender.Click += editButton_Click;
-            parsedSender.Text = "Edit";
+            Button SenderButton = (Button)sender;
+            string name = SenderButton.Name;
+            for (int i = 0; i < listOfEditButtons.Count; i++)
+            {
+                if (listOfEditButtons[i].Name == name)
+                {
+                    Person PersonToEdit = personList[listOfMatchIndices[i]];
+                    PersonToEdit.FirstName = listOfTextBoxGroups[i][0].Text;
+                    PersonToEdit.Surname = listOfTextBoxGroups[i][1].Text;
+                    PersonToEdit.Gender = listOfTextBoxGroups[i][3].Text;
+                    int EditedAge = 0;
+                    bool IsInt = int.TryParse(listOfTextBoxGroups[i][2].Text, out EditedAge);
+                    if (IsInt)
+                    {
+                        PersonToEdit.Age = EditedAge;
+                        WriteCSV();
+                        SenderButton.Click -= editButton_Click;
+                        SenderButton.Click += saveButton_Click;
+                        SenderButton.Text = "Edit";
+                        foreach (TextBox box in listOfTextBoxGroups[i])
+                        {
+                            box.ReadOnly = true;
+                        }
+                    }
+                    else 
+                    {
+                        MessageBox.Show("Please enter a number in 'Age'.");
+                    }
+                }
+            }
         }
 
         private void CreateDeleteButtons(int delButtonTop)
@@ -329,27 +368,17 @@ namespace reading_csvs
         }
         private void deleteButton_Click(object sender, EventArgs e)
         {
-            int personIndexInPersonListToDelete = 0;
-            Button parsedSender = (Button)sender;
-            string name = parsedSender.Name;
+            Button SenderButton = (Button)sender;
+            string name = SenderButton.Name;
             for (int i = 0; i < listOfDeleteButtons.Count; i++)
             {
                 if (listOfDeleteButtons[i].Name == name)
                 {
-                    personIndexInPersonListToDelete = listOfMatchIndices[i];
+                    personList.RemoveAt(listOfMatchIndices[i]);
                 }
             }
 
-            for (int i = 0; i < personList.Count; i++)
-            {
-                if (personIndexInPersonListToDelete == i)
-                {
-                    personList.RemoveAt(i);
-                }
-            }
             WriteCSV();
-
-
         }
 
         public void WriteCSV()
@@ -372,6 +401,7 @@ namespace reading_csvs
                         }
                     }
                 }
+
                 writer.Close();
             }
         }
