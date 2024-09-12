@@ -28,8 +28,6 @@ namespace reading_csvs
         [DllImport("user32.dll")]
         static extern bool HideCaret(IntPtr hWnd);
 
-        private int _currentSearchIndex = -1;
-
         public Form1()
         {
             InitializeComponent();
@@ -94,9 +92,9 @@ namespace reading_csvs
 
         private void deleteTextBoxes()
         {
-            foreach (List<TextBox> listOfEntryTextBoxes in listOfTextBoxGroups)
+            foreach (List<TextBox> TextBoxGroup in listOfTextBoxGroups)
             {
-                foreach (TextBox box in listOfEntryTextBoxes)
+                foreach (TextBox box in TextBoxGroup)
                 {
                     tabPage1.Controls.Remove(box);
                 }
@@ -107,15 +105,16 @@ namespace reading_csvs
         {
             numberOfMatches = 0;
             listOfMatchIndices.Clear();
+
             deleteLabels();
             deleteTextBoxes();
             deleteButtons(listOfDeleteButtons);
             deleteButtons(listOfEditButtons);
+
             listOfEditButtons.Clear();
             listOfDeleteButtons.Clear();
-            //listOfEntryTextBoxes.Clear();
-            _currentSearchIndex = -1;
             listOfCategoryLabels.Clear();
+            listOfTextBoxGroups.Clear();
 
             hasData = false;
 
@@ -203,7 +202,7 @@ namespace reading_csvs
             newTextBox.MouseMove += newTextBox_MouseMove;
             tabPage1.Controls.Add(newTextBox);
             buttonLeftPos = newTextBox.Right;
-            listOfTextBoxGroups[_currentSearchIndex].Add(newTextBox);
+            listOfTextBoxGroups[counter].Add(newTextBox);
 
         }
 
@@ -226,14 +225,14 @@ namespace reading_csvs
             // All the magic numbers here should be put into variables, so people know what the number is and can understand why you are adding it.
             // E.g.:
             // int baseOffsetXInPixels = 20;
-            // int numberOfLabels = 4;
             int LabelOffsetY = getDataButton.Top;
             int LabelOffsetX = getDataButton.Right + 20; //baseOffsetXInPixels
             int delButtonOffsetY = getDataButton.Top + 40;
             int editButtonOffsetY = getDataButton.Top + 15;
             int ButtonOffsetX = getDataButton.Right + 140;
             int labelHeight = 20;
-            int combinedLabelHeight = labelHeight * 4; //numberOfLabels; // This one is especially important, while the others magic numbers are for aesthetics, this one is for functionallity.
+            int numberOfLabels = 4;
+            int combinedLabelHeight = labelHeight * numberOfLabels; 
             int labelWidth = 70;
             const int labelHorGap = 180;
             const int VertGap = 50;
@@ -260,8 +259,6 @@ namespace reading_csvs
                         int delButtonTop = delButtonOffsetY + (combinedLabelHeight + VertGap) * i;
                         int editButtonTop = editButtonOffsetY + (combinedLabelHeight + VertGap) * i;
                         CreateCategoryLabels(LabelNewbaseTop, LabelNewBaseLeft, labelHeight, labelWidth);
-                        //listOfTextBoxGroups.Add(listOfEntryTextBoxes);
-                        //listOfEntryTextBoxes.Clear();
                         CreateDeleteButtons(delButtonTop);
                         CreateEditButtons(editButtonTop);
                     }
@@ -271,7 +268,6 @@ namespace reading_csvs
 
         private void CreateCategoryLabels(int baseTop, int baseLeft, int labelHeight, int labelWidth)
         {
-            _currentSearchIndex++;
             listOfTextBoxGroups.Add(new List<TextBox>());
             for (int categoryIndex = 0; categoryIndex < categories.Count(); categoryIndex++)
             {
