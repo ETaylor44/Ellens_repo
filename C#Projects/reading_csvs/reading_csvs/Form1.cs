@@ -10,13 +10,15 @@ namespace reading_csvs
     {
         List<Person> personList = new List<Person>();
         string dataLine = string.Empty;
+
+        // CM: Change this to use a local path. The .csv should probs be in the same folder as the .sln. This will allow other people to use the project!
         string filePath = "C:\\Users\\Egglen\\Documents\\person.csv";
         string[] categories = { "FirstName", "Surname", "Age", "Gender" };
         List<Button> listOfEditButtons = new List<Button>();
         List<Button> listOfDeleteButtons = new List<Button>();
         List<string> personDataAsList = new List<string>();
         List<Label> listOfCategoryLabels = new List<Label>();
-        List<TextBox> listOfEntryTextBoxes = new List<TextBox>();
+        //List<TextBox> listOfEntryTextBoxes = new List<TextBox>();
         List<int> listOfMatchIndices = new List<int>();
         List<List<TextBox>> listOfTextBoxGroups = new List<List<TextBox>>();
         bool hasData = false;
@@ -26,9 +28,15 @@ namespace reading_csvs
         [DllImport("user32.dll")]
         static extern bool HideCaret(IntPtr hWnd);
 
+        private int _currentSearchIndex = -1;
+
         public Form1()
         {
             InitializeComponent();
+
+            // CM: Space these out to make them more legible.
+            // After }; there should always be an empty line.
+            // Also after a } there should be an empty line, unless you're opening an else statement.
             getDataButton.Text = "View data";
             checkedListBox1.CheckOnClick = true;
             checkedListBox1.Items.AddRange(categories);
@@ -60,12 +68,15 @@ namespace reading_csvs
             dataGridView2.DataSource = personList;
         }
 
+        // CM: All function names should be capitalised.
         // Search data
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             textBoxName.Text = $"Enter {comboBox1.Text}";
         }
 
+        // CM: Rename these. What labels are you refering to? Maybe something like DeleteSearchResultLabels
+        // Don't worry about variable/function name length, it's more important to be clear!
         private void deleteLabels()
         {
             foreach (Label label in listOfCategoryLabels)
@@ -102,13 +113,17 @@ namespace reading_csvs
             deleteButtons(listOfEditButtons);
             listOfEditButtons.Clear();
             listOfDeleteButtons.Clear();
-            listOfEntryTextBoxes.Clear();
+            //listOfEntryTextBoxes.Clear();
+            _currentSearchIndex = -1;
             listOfCategoryLabels.Clear();
 
             hasData = false;
 
             for (int i = 0; i < personList.Count; i++)
             {
+                // CM: It's common practice to use a switch case for something like this.
+                // Where you have lots of if cases, all checking the same variable (comboBox1.Text in our case).
+
                 if (comboBox1.Text == "First name")
                 {
                     if (personList[i].FirstName.ToLower() == textBoxName.Text.ToLower())
@@ -188,7 +203,8 @@ namespace reading_csvs
             newTextBox.MouseMove += newTextBox_MouseMove;
             tabPage1.Controls.Add(newTextBox);
             buttonLeftPos = newTextBox.Right;
-            listOfEntryTextBoxes.Add(newTextBox);
+            listOfTextBoxGroups[_currentSearchIndex].Add(newTextBox);
+
         }
 
         private void NewTextBox_Click(object sender, EventArgs e)
@@ -207,13 +223,17 @@ namespace reading_csvs
 
         public void PositionSearchResult(int leftIncrement)
         {
+            // All the magic numbers here should be put into variables, so people know what the number is and can understand why you are adding it.
+            // E.g.:
+            // int baseOffsetXInPixels = 20;
+            // int numberOfLabels = 4;
             int LabelOffsetY = getDataButton.Top;
-            int LabelOffsetX = getDataButton.Right + 20;
+            int LabelOffsetX = getDataButton.Right + 20; //baseOffsetXInPixels
             int delButtonOffsetY = getDataButton.Top + 40;
             int editButtonOffsetY = getDataButton.Top + 15;
             int ButtonOffsetX = getDataButton.Right + 140;
             int labelHeight = 20;
-            int combinedLabelHeight = labelHeight * 4;
+            int combinedLabelHeight = labelHeight * 4; //numberOfLabels; // This one is especially important, while the others magic numbers are for aesthetics, this one is for functionallity.
             int labelWidth = 70;
             const int labelHorGap = 180;
             const int VertGap = 50;
@@ -240,8 +260,8 @@ namespace reading_csvs
                         int delButtonTop = delButtonOffsetY + (combinedLabelHeight + VertGap) * i;
                         int editButtonTop = editButtonOffsetY + (combinedLabelHeight + VertGap) * i;
                         CreateCategoryLabels(LabelNewbaseTop, LabelNewBaseLeft, labelHeight, labelWidth);
-                        listOfTextBoxGroups.Add(listOfEntryTextBoxes);
-                        listOfEntryTextBoxes.Clear();
+                        //listOfTextBoxGroups.Add(listOfEntryTextBoxes);
+                        //listOfEntryTextBoxes.Clear();
                         CreateDeleteButtons(delButtonTop);
                         CreateEditButtons(editButtonTop);
                     }
@@ -251,7 +271,8 @@ namespace reading_csvs
 
         private void CreateCategoryLabels(int baseTop, int baseLeft, int labelHeight, int labelWidth)
         {
-
+            _currentSearchIndex++;
+            listOfTextBoxGroups.Add(new List<TextBox>());
             for (int categoryIndex = 0; categoryIndex < categories.Count(); categoryIndex++)
             {
                 Label NewLabel = new Label();
