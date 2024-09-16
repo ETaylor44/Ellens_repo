@@ -1,13 +1,15 @@
 using CsvHelper;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics.Metrics;
 using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using System.Xml.Linq;
 
 namespace reading_csvs
 {
-    public partial class Form1 : Form
+    public partial class DatabaseManager : Form
     {
         List<Person> personList = new List<Person>();
         string dataLine = string.Empty;
@@ -29,7 +31,7 @@ namespace reading_csvs
         static extern bool HideCaret(IntPtr hWnd);
         bool editingEnabled = false;
 
-        public Form1()
+        public DatabaseManager()
         {
             InitializeComponent();
 
@@ -53,7 +55,6 @@ namespace reading_csvs
 
             reader.Close();
             personList.RemoveAt(0);
-            dataGridView2.DataSource = personList;
         }
 
         // CM: All function names should be capitalised.
@@ -110,8 +111,6 @@ namespace reading_csvs
 
             for (int i = 0; i < personList.Count; i++)
             {
-                // CM: It's common practice to use a switch case for something like this.
-                // Where you have lots of if cases, all checking the same variable (comboBox1.Text in our case).
                 switch (DropDownBox.Text)
                 {
                     case "First name":
@@ -135,13 +134,13 @@ namespace reading_csvs
                         break;
 
                     case "Age":
-                        numberOfMatches++;
                         int userAgeAsInt = -1;
                         bool successfulAgeParse = int.TryParse(textBoxName.Text, out userAgeAsInt);
                         if (successfulAgeParse == false)
                         {
                             MessageBox.Show("Please enter a number.");
                             hasData = true;
+                            textBoxName.Text = "0";
                         }
                         else
                         {
@@ -206,7 +205,6 @@ namespace reading_csvs
                 HideCaret(TextBoxSender.Handle);
 
             }
-
         }
         private void NewTextBox_MouseMove(object sender, MouseEventArgs e)
         {
@@ -226,13 +224,13 @@ namespace reading_csvs
             int DelButtonAddedOffsetY = 40;
             int EditButtonAddedOffsetY = 15;
             int pixelsOffsetFromLabelX = 20;
-            int LabelOffsetX = getDataButton.Right + pixelsOffsetFromLabelX; 
+            int LabelOffsetX = getDataButton.Right + pixelsOffsetFromLabelX;
             int delButtonOffsetY = getDataButton.Top + DelButtonAddedOffsetY;
             int editButtonOffsetY = getDataButton.Top + EditButtonAddedOffsetY;
             int ButtonOffsetX = getDataButton.Right + 140;
             int labelHeight = 20;
             int numberOfLabels = 4;
-            int combinedLabelHeight = labelHeight * numberOfLabels; 
+            int combinedLabelHeight = labelHeight * numberOfLabels;
             int labelWidth = 70;
             const int labelHorGap = 180;
             const int VertGap = 50;
@@ -252,7 +250,7 @@ namespace reading_csvs
             {
                 for (int j = 0; j < horizontalLines; j++)
                 {
-                    if (counter+1 < listOfMatchIndices.Count())
+                    if (counter + 1 < listOfMatchIndices.Count())
                     {
                         counter++;
                         int LabelNewBaseLeft = LabelOffsetX + (labelWidth + labelHorGap) * j;
@@ -282,7 +280,7 @@ namespace reading_csvs
                 tabPage1.Controls.Add(NewLabel);
                 CreateTextBoxes(NewLabel, categoryIndex);
             }
-            
+
         }
 
         private void CreateEditButtons(int editButtonTop)
@@ -296,9 +294,9 @@ namespace reading_csvs
             newButton.Click += EditButton_Click;
             listOfEditButtons.Add(newButton);
             tabPage1.Controls.Add(newButton);
-            
+
         }
-    
+
         private void EditButton_Click(object sender, EventArgs e)
         {
             editingEnabled = true;
@@ -350,7 +348,7 @@ namespace reading_csvs
                         }
 
                     }
-                    else 
+                    else
                     {
                         MessageBox.Show("Please enter a number in 'Age'.");
                     }
@@ -395,12 +393,12 @@ namespace reading_csvs
                     csv.WriteHeader<Person>();
                     if (personList.Count != 0)
                     {
-                    csv.NextRecord();
+                        csv.NextRecord();
                     }
                     for (int i = 0; i < personList.Count; i++)
                     {
                         csv.WriteRecord(personList[i]);
-                        if (i != personList.Count-1)
+                        if (i != personList.Count - 1)
                         {
                             csv.NextRecord();
                         }
@@ -466,7 +464,7 @@ namespace reading_csvs
         // View all data and make edits.
         private void DataTableCellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            dataGridView2.ReadOnly = false;
+            ViewAllDataTable.ReadOnly = false;
         }
 
         private void DataTable_DataError(object sender, DataGridViewDataErrorEventArgs e)
@@ -476,7 +474,7 @@ namespace reading_csvs
 
         private void DataTable_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            dataGridView2.ReadOnly = true;
+            ViewAllDataTable.ReadOnly = true;
         }
 
         private void DataTableSaveButton_Click(object sender, EventArgs e)
@@ -484,23 +482,15 @@ namespace reading_csvs
             WriteCSV();
         }
 
+
         private void TabControl2_SelectedIndexChanged(object sender, EventArgs e)
         {
-            dataGridView2.DataSource = personList;
-            dataGridView2.Update();
-            dataGridView2.Refresh();
+            personBindingSource.DataSource = personList;
+            ViewAllDataTable.Update();
+            ViewAllDataTable.Refresh();
             label1.Text = string.Empty;
             textBoxName.Text = string.Empty;
             DropDownBox.Text = "Search by";
-        }
-
-        private void AddColumn_Click(object sender, EventArgs e)
-        {
-            DataGridViewColumn NewColumn = new DataGridViewColumn();
-            NewColumn.Name = $"{NewColumn} {dataGridView2.ColumnCount + 1}";
-            NewColumn.HeaderText = string.Empty;
-            NewColumn.CellTemplate = new DataGridViewTextBoxCell();
-            dataGridView2.Columns.Insert(dataGridView2.ColumnCount, NewColumn);
         }
 
         //Export data.
@@ -567,7 +557,21 @@ namespace reading_csvs
 
         }
 
-        
+        private void AddRowButton_Click(object sender, EventArgs e)
+        {
+            BindingSource source = (BindingSource)ViewAllDataTable.DataSource;
+            List<Person> list = (List<Person>)source.DataSource;
+
+            source.Add(new Person(string.Empty, string.Empty, 0, string.Empty));
+        }
+
+        private List<Person> GetDataBinding()
+        {
+            BindingSource source = (BindingSource)ViewAllDataTable.DataSource;
+            List<Person> list = (List<Person>)source.DataSource;
+
+            return list;
+        }
     }
 }
 

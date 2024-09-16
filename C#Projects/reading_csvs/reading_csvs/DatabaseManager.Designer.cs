@@ -1,6 +1,6 @@
 ﻿namespace reading_csvs
 {
-    partial class Form1
+    partial class DatabaseManager
     {
         /// <summary>
         ///  Required designer variable.
@@ -40,14 +40,13 @@
             addFirstNameTextBox = new TextBox();
             tabControl2 = new TabControl();
             tabPage1 = new TabPage();
-            vScrollBar1 = new VScrollBar();
             displayDataLabelRight = new Label();
             displayDataLabelLeft = new Label();
             tabPage2 = new TabPage();
             tabPage3 = new TabPage();
-            AddColumn = new Button();
+            AddRowButton = new Button();
             SaveButton = new Button();
-            dataGridView2 = new DataGridView();
+            ViewAllDataTable = new DataGridView();
             firstNameDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             surnameDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             ageDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
@@ -60,10 +59,11 @@
             tabPage1.SuspendLayout();
             tabPage2.SuspendLayout();
             tabPage3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)ViewAllDataTable).BeginInit();
             ((System.ComponentModel.ISupportInitialize)personBindingSource).BeginInit();
             tabPage4.SuspendLayout();
             SuspendLayout();
+
             // 
             // getDataButton
             // 
@@ -83,12 +83,12 @@
             textBoxName.TabIndex = 2;
             textBoxName.Click += TextBoxName_Click;
             // 
-            // comboBox1
+            // DropDownBox
             // 
             DropDownBox.FormattingEnabled = true;
             DropDownBox.Items.AddRange(new object[] { "First name", "Surname", "Age", "Gender" });
             DropDownBox.Location = new Point(32, 44);
-            DropDownBox.Name = "comboBox1";
+            DropDownBox.Name = "DropDownBox";
             DropDownBox.Size = new Size(121, 23);
             DropDownBox.TabIndex = 3;
             DropDownBox.Text = "Search by";
@@ -164,7 +164,6 @@
             // 
             // tabPage1
             // 
-            tabPage1.Controls.Add(vScrollBar1);
             tabPage1.Controls.Add(displayDataLabelRight);
             tabPage1.Controls.Add(displayDataLabelLeft);
             tabPage1.Controls.Add(getDataButton);
@@ -177,13 +176,6 @@
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Search Data";
             tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // vScrollBar1
-            // 
-            vScrollBar1.Location = new Point(782, 0);
-            vScrollBar1.Name = "vScrollBar1";
-            vScrollBar1.Size = new Size(15, 422);
-            vScrollBar1.TabIndex = 6;
             // 
             // displayDataLabelRight
             // 
@@ -219,9 +211,9 @@
             // 
             // tabPage3
             // 
-            tabPage3.Controls.Add(AddColumn);
+            tabPage3.Controls.Add(AddRowButton);
             tabPage3.Controls.Add(SaveButton);
-            tabPage3.Controls.Add(dataGridView2);
+            tabPage3.Controls.Add(ViewAllDataTable);
             tabPage3.Location = new Point(4, 24);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new Padding(3);
@@ -230,19 +222,19 @@
             tabPage3.Text = "View All Data";
             tabPage3.UseVisualStyleBackColor = true;
             // 
-            // AddColumn
+            // AddRowButton
             // 
-            AddColumn.BackgroundImageLayout = ImageLayout.None;
-            AddColumn.FlatAppearance.BorderSize = 0;
-            AddColumn.FlatStyle = FlatStyle.Flat;
-            AddColumn.Font = new Font("Segoe UI", 14F);
-            AddColumn.Location = new Point(753, 264);
-            AddColumn.Name = "AddColumn";
-            AddColumn.Size = new Size(35, 40);
-            AddColumn.TabIndex = 2;
-            AddColumn.Text = "+";
-            AddColumn.UseVisualStyleBackColor = true;
-            AddColumn.Click += AddColumn_Click;
+            AddRowButton.BackgroundImageLayout = ImageLayout.None;
+            AddRowButton.FlatAppearance.BorderSize = 0;
+            AddRowButton.FlatStyle = FlatStyle.Flat;
+            AddRowButton.Font = new Font("Segoe UI", 14F);
+            AddRowButton.Location = new Point(753, 264);
+            AddRowButton.Name = "AddRowButton";
+            AddRowButton.Size = new Size(35, 40);
+            AddRowButton.TabIndex = 2;
+            AddRowButton.Text = "+";
+            AddRowButton.UseVisualStyleBackColor = true;
+            AddRowButton.Click += AddRowButton_Click;
             // 
             // SaveButton
             // 
@@ -254,22 +246,22 @@
             SaveButton.UseVisualStyleBackColor = true;
             SaveButton.Click += DataTableSaveButton_Click;
             // 
-            // dataGridView2
+            // ViewAllDataTable
             // 
-            dataGridView2.AllowUserToResizeColumns = false;
-            dataGridView2.AllowUserToResizeRows = false;
-            dataGridView2.AutoGenerateColumns = false;
-            dataGridView2.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView2.Columns.AddRange(new DataGridViewColumn[] { firstNameDataGridViewTextBoxColumn, surnameDataGridViewTextBoxColumn, ageDataGridViewTextBoxColumn, genderDataGridViewTextBoxColumn });
-            dataGridView2.DataSource = personBindingSource;
-            dataGridView2.Location = new Point(6, 6);
-            dataGridView2.Name = "dataGridView2";
-            dataGridView2.Size = new Size(741, 298);
-            dataGridView2.TabIndex = 0;
-            dataGridView2.CellClick += DataTable_CellClick;
-            dataGridView2.CellDoubleClick += DataTableCellDoubleClick;
-            dataGridView2.DataError += DataTable_DataError;
+            ViewAllDataTable.AllowUserToResizeColumns = false;
+            ViewAllDataTable.AllowUserToResizeRows = false;
+            ViewAllDataTable.AutoGenerateColumns = false;
+            ViewAllDataTable.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            ViewAllDataTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            ViewAllDataTable.Columns.AddRange(new DataGridViewColumn[] { firstNameDataGridViewTextBoxColumn, surnameDataGridViewTextBoxColumn, ageDataGridViewTextBoxColumn, genderDataGridViewTextBoxColumn });
+            ViewAllDataTable.DataSource = personBindingSource;
+            ViewAllDataTable.Location = new Point(6, 6);
+            ViewAllDataTable.Name = "ViewAllDataTable";
+            ViewAllDataTable.Size = new Size(741, 298);
+            ViewAllDataTable.TabIndex = 0;
+            ViewAllDataTable.CellClick += DataTable_CellClick;
+            ViewAllDataTable.CellDoubleClick += DataTableCellDoubleClick;
+            ViewAllDataTable.DataError += DataTable_DataError;
             // 
             // firstNameDataGridViewTextBoxColumn
             // 
@@ -331,21 +323,21 @@
             checkedListBox1.Size = new Size(120, 90);
             checkedListBox1.TabIndex = 0;
             // 
-            // Form1
+            // DatabaseManager
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
             Controls.Add(tabControl2);
-            Name = "Form1";
-            Text = "Form1";
+            Name = "DatabaseManager";
+            Text = "Database Manager";
             tabControl2.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
             tabPage1.PerformLayout();
             tabPage2.ResumeLayout(false);
             tabPage2.PerformLayout();
             tabPage3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dataGridView2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)ViewAllDataTable).EndInit();
             ((System.ComponentModel.ISupportInitialize)personBindingSource).EndInit();
             tabPage4.ResumeLayout(false);
             ResumeLayout(false);
@@ -366,14 +358,13 @@
         private TabPage tabPage2;
         private Label displayDataLabelLeft;
         private Label displayDataLabelRight;
-        private VScrollBar vScrollBar1;
         private TabPage tabPage3;
-        private DataGridView dataGridView2;
+        private DataGridView ViewAllDataTable;
         private Button SaveButton;
         private TabPage tabPage4;
         private CheckedListBox checkedListBox1;
         private Button ExportButton;
-        private Button AddColumn;
+        private Button AddRowButton;
         private DataGridViewTextBoxColumn firstNameDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn surnameDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn ageDataGridViewTextBoxColumn;
