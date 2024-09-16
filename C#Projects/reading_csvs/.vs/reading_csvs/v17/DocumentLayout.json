@@ -7,16 +7,16 @@
       "RelativeMoniker": "D:0:0:{B5368422-2F79-4AC0-AB29-09605086F885}|reading_csvs\\reading_csvs.csproj|solutionrelative:reading_csvs\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{B5368422-2F79-4AC0-AB29-09605086F885}|reading_csvs\\reading_csvs.csproj|c:\\users\\egglen\\documents\\ellens_repo\\c#projects\\reading_csvs\\reading_csvs\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B5368422-2F79-4AC0-AB29-09605086F885}|reading_csvs\\reading_csvs.csproj|solutionrelative:reading_csvs\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{B5368422-2F79-4AC0-AB29-09605086F885}|reading_csvs\\reading_csvs.csproj|C:\\Users\\Egglen\\Documents\\Ellens_repo\\C#Projects\\reading_csvs\\reading_csvs\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{B5368422-2F79-4AC0-AB29-09605086F885}|reading_csvs\\reading_csvs.csproj|solutionrelative:reading_csvs\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
       "AbsoluteMoniker": "D:0:0:{B5368422-2F79-4AC0-AB29-09605086F885}|reading_csvs\\reading_csvs.csproj|c:\\users\\egglen\\documents\\ellens_repo\\c#projects\\reading_csvs\\reading_csvs\\person.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B5368422-2F79-4AC0-AB29-09605086F885}|reading_csvs\\reading_csvs.csproj|solutionrelative:reading_csvs\\person.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B5368422-2F79-4AC0-AB29-09605086F885}|reading_csvs\\reading_csvs.csproj|c:\\users\\egglen\\documents\\ellens_repo\\c#projects\\reading_csvs\\reading_csvs\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B5368422-2F79-4AC0-AB29-09605086F885}|reading_csvs\\reading_csvs.csproj|solutionrelative:reading_csvs\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,16 +30,17 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "Form1.Designer.cs",
               "DocumentMoniker": "C:\\Users\\Egglen\\Documents\\Ellens_repo\\C#Projects\\reading_csvs\\reading_csvs\\Form1.Designer.cs",
               "RelativeDocumentMoniker": "reading_csvs\\Form1.Designer.cs",
               "ToolTip": "C:\\Users\\Egglen\\Documents\\Ellens_repo\\C#Projects\\reading_csvs\\reading_csvs\\Form1.Designer.cs",
               "RelativeToolTip": "reading_csvs\\Form1.Designer.cs",
-              "ViewState": "AgIAAEsAAAAAAAAAAAAowEsAAAAuAAAAAAAAAA==",
+              "ViewState": "AgIAABMAAAAAAAAAAAAgwA4AAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-08-23T10:08:56.077Z",
-              "IsPinned": true
+              "IsPinned": true,
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -47,9 +48,9 @@
               "Title": "Form1.cs",
               "DocumentMoniker": "C:\\Users\\Egglen\\Documents\\Ellens_repo\\C#Projects\\reading_csvs\\reading_csvs\\Form1.cs",
               "RelativeDocumentMoniker": "reading_csvs\\Form1.cs",
-              "ToolTip": "C:\\Users\\Egglen\\Documents\\Ellens_repo\\C#Projects\\reading_csvs\\reading_csvs\\Form1.cs*",
-              "RelativeToolTip": "reading_csvs\\Form1.cs*",
-              "ViewState": "AgIAAHEBAAAAAAAAAAAqwH4BAAAAAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Egglen\\Documents\\Ellens_repo\\C#Projects\\reading_csvs\\reading_csvs\\Form1.cs",
+              "RelativeToolTip": "reading_csvs\\Form1.cs",
+              "ViewState": "AgIAACgBAAAAAAAAAAAAANQAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-08-23T10:08:39.395Z",
               "IsPinned": true,
@@ -57,18 +58,18 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "Form1.cs [Design]",
               "DocumentMoniker": "C:\\Users\\Egglen\\Documents\\Ellens_repo\\C#Projects\\reading_csvs\\reading_csvs\\Form1.cs",
               "RelativeDocumentMoniker": "reading_csvs\\Form1.cs",
-              "ToolTip": "C:\\Users\\Egglen\\Documents\\Ellens_repo\\C#Projects\\reading_csvs\\reading_csvs\\Form1.cs [Design]*",
-              "RelativeToolTip": "reading_csvs\\Form1.cs [Design]*",
+              "ToolTip": "C:\\Users\\Egglen\\Documents\\Ellens_repo\\C#Projects\\reading_csvs\\reading_csvs\\Form1.cs [Design]",
+              "RelativeToolTip": "reading_csvs\\Form1.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-09-02T15:45:31.029Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Person.cs",
               "DocumentMoniker": "C:\\Users\\Egglen\\Documents\\Ellens_repo\\C#Projects\\reading_csvs\\reading_csvs\\Person.cs",
               "RelativeDocumentMoniker": "reading_csvs\\Person.cs",

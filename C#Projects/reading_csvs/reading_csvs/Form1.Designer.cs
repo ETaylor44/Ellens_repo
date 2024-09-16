@@ -31,7 +31,7 @@
             components = new System.ComponentModel.Container();
             getDataButton = new Button();
             textBoxName = new TextBox();
-            comboBox1 = new ComboBox();
+            DropDownBox = new ComboBox();
             label1 = new Label();
             addDataButton = new Button();
             addGenderTextBox = new TextBox();
@@ -73,7 +73,7 @@
             getDataButton.TabIndex = 1;
             getDataButton.Text = "Get data";
             getDataButton.UseVisualStyleBackColor = true;
-            getDataButton.Click += getDataButton_Click;
+            getDataButton.Click += GetDataButton_Click;
             // 
             // textBoxName
             // 
@@ -81,18 +81,18 @@
             textBoxName.Name = "textBoxName";
             textBoxName.Size = new Size(100, 23);
             textBoxName.TabIndex = 2;
-            textBoxName.Click += textBoxName_Click;
+            textBoxName.Click += TextBoxName_Click;
             // 
             // comboBox1
             // 
-            comboBox1.FormattingEnabled = true;
-            comboBox1.Items.AddRange(new object[] { "First name", "Surname", "Age", "Gender" });
-            comboBox1.Location = new Point(32, 44);
-            comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(121, 23);
-            comboBox1.TabIndex = 3;
-            comboBox1.Text = "Search by";
-            comboBox1.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
+            DropDownBox.FormattingEnabled = true;
+            DropDownBox.Items.AddRange(new object[] { "First name", "Surname", "Age", "Gender" });
+            DropDownBox.Location = new Point(32, 44);
+            DropDownBox.Name = "comboBox1";
+            DropDownBox.Size = new Size(121, 23);
+            DropDownBox.TabIndex = 3;
+            DropDownBox.Text = "Search by";
+            DropDownBox.SelectedIndexChanged += DropDownBox_SelectedIndexChanged;
             // 
             // label1
             // 
@@ -111,7 +111,7 @@
             addDataButton.TabIndex = 4;
             addDataButton.Text = "Add to database";
             addDataButton.UseVisualStyleBackColor = true;
-            addDataButton.Click += addDataButton_Click;
+            addDataButton.Click += AddDataButton_Click;
             // 
             // addGenderTextBox
             // 
@@ -120,7 +120,7 @@
             addGenderTextBox.Size = new Size(100, 23);
             addGenderTextBox.TabIndex = 3;
             addGenderTextBox.Text = "Enter gender";
-            addGenderTextBox.Click += addGenderTextBox_Click;
+            addGenderTextBox.Click += AddGenderTextBox_Click;
             // 
             // addAgeTextBox
             // 
@@ -129,7 +129,7 @@
             addAgeTextBox.Size = new Size(100, 23);
             addAgeTextBox.TabIndex = 2;
             addAgeTextBox.Text = "Enter age";
-            addAgeTextBox.Click += addSurnameTextBox_Click;
+            addAgeTextBox.Click += AddSurnameTextBox_Click;
             // 
             // addSurnameTextBox
             // 
@@ -138,7 +138,7 @@
             addSurnameTextBox.Size = new Size(100, 23);
             addSurnameTextBox.TabIndex = 1;
             addSurnameTextBox.Text = "Enter surname";
-            addSurnameTextBox.Click += addAgeTextBox_Click;
+            addSurnameTextBox.Click += AddAgeTextBox_Click;
             // 
             // addFirstNameTextBox
             // 
@@ -147,7 +147,7 @@
             addFirstNameTextBox.Size = new Size(100, 23);
             addFirstNameTextBox.TabIndex = 0;
             addFirstNameTextBox.Text = "Enter first name";
-            addFirstNameTextBox.Click += addFirstNameTextBox_Click;
+            addFirstNameTextBox.Click += AddFirstNameTextBox_Click;
             // 
             // tabControl2
             // 
@@ -160,7 +160,7 @@
             tabControl2.SelectedIndex = 0;
             tabControl2.Size = new Size(805, 450);
             tabControl2.TabIndex = 7;
-            tabControl2.SelectedIndexChanged += tabControl2_SelectedIndexChanged;
+            tabControl2.SelectedIndexChanged += TabControl2_SelectedIndexChanged;
             // 
             // tabPage1
             // 
@@ -168,7 +168,7 @@
             tabPage1.Controls.Add(displayDataLabelRight);
             tabPage1.Controls.Add(displayDataLabelLeft);
             tabPage1.Controls.Add(getDataButton);
-            tabPage1.Controls.Add(comboBox1);
+            tabPage1.Controls.Add(DropDownBox);
             tabPage1.Controls.Add(textBoxName);
             tabPage1.Location = new Point(4, 24);
             tabPage1.Name = "tabPage1";
@@ -252,7 +252,7 @@
             SaveButton.TabIndex = 1;
             SaveButton.Text = "Save";
             SaveButton.UseVisualStyleBackColor = true;
-            SaveButton.Click += SaveButton_Click;
+            SaveButton.Click += DataTableSaveButton_Click;
             // 
             // dataGridView2
             // 
@@ -267,9 +267,9 @@
             dataGridView2.Name = "dataGridView2";
             dataGridView2.Size = new Size(741, 298);
             dataGridView2.TabIndex = 0;
-            dataGridView2.CellClick += dataGridView2_CellClick;
-            dataGridView2.CellDoubleClick += dgv2CellDoubleClick;
-            dataGridView2.DataError += dvg2_DataError;
+            dataGridView2.CellClick += DataTable_CellClick;
+            dataGridView2.CellDoubleClick += DataTableCellDoubleClick;
+            dataGridView2.DataError += DataTable_DataError;
             // 
             // firstNameDataGridViewTextBoxColumn
             // 
@@ -319,7 +319,7 @@
             ExportButton.TabIndex = 1;
             ExportButton.Text = "Export";
             ExportButton.UseVisualStyleBackColor = true;
-            ExportButton.Click += button1_Click;
+            ExportButton.Click += ExportButton_Click;
             // 
             // checkedListBox1
             // 
@@ -354,7 +354,7 @@
         #endregion
         private Button getDataButton;
         private TextBox textBoxName;
-        private ComboBox comboBox1;
+        private ComboBox DropDownBox;
         private Button addDataButton;
         private TextBox addGenderTextBox;
         private TextBox addAgeTextBox;

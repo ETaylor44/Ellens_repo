@@ -13,13 +13,12 @@ namespace reading_csvs
         string dataLine = string.Empty;
 
         // CM: Change this to use a local path. The .csv should probs be in the same folder as the .sln. This will allow other people to use the project!
-        string filePath = "C:\\Users\\Egglen\\Documents\\person.csv";
+        string filePath = "C:\\Users\\Egglen\\Documents\\Ellens_repo\\C#Projects\\reading_csvs\\person.csv";
         string[] categories = { "FirstName", "Surname", "Age", "Gender" };
         List<Button> listOfEditButtons = new List<Button>();
         List<Button> listOfDeleteButtons = new List<Button>();
         List<string> personDataAsList = new List<string>();
         List<Label> listOfCategoryLabels = new List<Label>();
-        //List<TextBox> listOfEntryTextBoxes = new List<TextBox>();
         List<int> listOfMatchIndices = new List<int>();
         List<List<TextBox>> listOfTextBoxGroups = new List<List<TextBox>>();
         bool hasData = false;
@@ -28,27 +27,16 @@ namespace reading_csvs
         int buttonLeftPos = 0;
         [DllImport("user32.dll")]
         static extern bool HideCaret(IntPtr hWnd);
+        bool editingEnabled = false;
 
         public Form1()
         {
             InitializeComponent();
 
             // CM: Space these out to make them more legible.
-            // After }; there should always be an empty line.
-            // Also after a } there should be an empty line, unless you're opening an else statement.
             getDataButton.Text = "View data";
             checkedListBox1.CheckOnClick = true;
             checkedListBox1.Items.AddRange(categories);
-            AddColumn.FlatAppearance.MouseOverBackColor = AddColumn.BackColor;
-            AddColumn.BackColorChanged += (s, e) =>
-            {
-                AddColumn.FlatAppearance.MouseOverBackColor = AddColumn.BackColor;
-            };
-            AddColumn.FlatAppearance.MouseDownBackColor = AddColumn.BackColor;
-            AddColumn.BackColorChanged += (s, e) =>
-            {
-                AddColumn.FlatAppearance.MouseDownBackColor = AddColumn.BackColor;
-            };
 
             StreamReader reader = new StreamReader(File.OpenRead(filePath));
             while (!reader.EndOfStream)
@@ -62,6 +50,7 @@ namespace reading_csvs
                 Person newPerson = new Person(dataAsList[0], dataAsList[1], ageAsInt, dataAsList[3]);
                 personList.Add(newPerson);
             }
+
             reader.Close();
             personList.RemoveAt(0);
             dataGridView2.DataSource = personList;
@@ -69,21 +58,21 @@ namespace reading_csvs
 
         // CM: All function names should be capitalised.
         // Search data
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void DropDownBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            textBoxName.Text = $"Enter {comboBox1.Text}";
+            textBoxName.Text = $"Enter {DropDownBox.Text}";
         }
 
         // CM: Rename these. What labels are you refering to? Maybe something like DeleteSearchResultLabels
         // Don't worry about variable/function name length, it's more important to be clear!
-        private void deleteLabels()
+        private void DeleteLabels()
         {
             foreach (Label label in listOfCategoryLabels)
             {
                 tabPage1.Controls.Remove(label);
             }
         }
-        private void deleteButtons(List<Button> listOfButtons)
+        private void DeleteButtons(List<Button> listOfButtons)
         {
             foreach (Button button in listOfButtons)
             {
@@ -91,7 +80,7 @@ namespace reading_csvs
             }
         }
 
-        private void deleteTextBoxes()
+        private void DeleteTextBoxes()
         {
             foreach (List<TextBox> TextBoxGroup in listOfTextBoxGroups)
             {
@@ -102,15 +91,15 @@ namespace reading_csvs
             }
         }
 
-        private void getDataButton_Click(object sender, EventArgs e)
+        private void GetDataButton_Click(object sender, EventArgs e)
         {
             numberOfMatches = 0;
             listOfMatchIndices.Clear();
 
-            deleteLabels();
-            deleteTextBoxes();
-            deleteButtons(listOfDeleteButtons);
-            deleteButtons(listOfEditButtons);
+            DeleteLabels();
+            DeleteTextBoxes();
+            DeleteButtons(listOfDeleteButtons);
+            DeleteButtons(listOfEditButtons);
 
             listOfEditButtons.Clear();
             listOfDeleteButtons.Clear();
@@ -123,59 +112,60 @@ namespace reading_csvs
             {
                 // CM: It's common practice to use a switch case for something like this.
                 // Where you have lots of if cases, all checking the same variable (comboBox1.Text in our case).
-
-                if (comboBox1.Text == "First name")
+                switch (DropDownBox.Text)
                 {
-                    if (personList[i].FirstName.ToLower() == textBoxName.Text.ToLower())
-                    {
-                        numberOfMatches++;
-                        hasData = true;
-                        listOfMatchIndices.Add(i);
-                    }
-                }
-
-                else if (comboBox1.Text == "Surname")
-                {
-                    if (personList[i].Surname.ToLower() == textBoxName.Text.ToLower())
-                    {
-                        numberOfMatches++;
-                        hasData = true;
-                        listOfMatchIndices.Add(i);
-                    }
-                }
-
-                else if (comboBox1.Text == "Age")
-                {
-                    numberOfMatches++;
-                    int userAgeAsInt = -1;
-                    bool successfulAgeParse = int.TryParse(textBoxName.Text, out userAgeAsInt);
-                    if (successfulAgeParse == false)
-                    {
-                        MessageBox.Show("Please enter a number.");
-                        hasData = true;
-                    }
-                    else
-                    {
-                        if (personList[i].Age == userAgeAsInt)
+                    case "First name":
+                        if (personList[i].FirstName.ToLower() == textBoxName.Text.ToLower())
                         {
                             numberOfMatches++;
                             hasData = true;
                             listOfMatchIndices.Add(i);
                         }
-                    }
-                }
 
-                else if (comboBox1.Text == "Gender")
-                {
-                    if (personList[i].Gender.ToLower() == textBoxName.Text.ToLower())
-                    {
+                        break;
+
+                    case "Surname":
+                        if (personList[i].Surname.ToLower() == textBoxName.Text.ToLower())
+                        {
+                            numberOfMatches++;
+                            hasData = true;
+                            listOfMatchIndices.Add(i);
+                        }
+
+                        break;
+
+                    case "Age":
                         numberOfMatches++;
-                        hasData = true;
-                        listOfMatchIndices.Add(i);
-                    }
+                        int userAgeAsInt = -1;
+                        bool successfulAgeParse = int.TryParse(textBoxName.Text, out userAgeAsInt);
+                        if (successfulAgeParse == false)
+                        {
+                            MessageBox.Show("Please enter a number.");
+                            hasData = true;
+                        }
+                        else
+                        {
+                            if (personList[i].Age == userAgeAsInt)
+                            {
+                                numberOfMatches++;
+                                hasData = true;
+                                listOfMatchIndices.Add(i);
+                            }
+                        }
+
+                        break;
+
+                    case "Gender":
+                        if (personList[i].Gender.ToLower() == textBoxName.Text.ToLower())
+                        {
+                            numberOfMatches++;
+                            hasData = true;
+                            listOfMatchIndices.Add(i);
+                        }
+
+                        break;
                 }
             }
-
 
             if (hasData == false)
             {
@@ -200,7 +190,7 @@ namespace reading_csvs
             newTextBox.BackColor = Color.White;
             newTextBox.Cursor = System.Windows.Forms.Cursors.Arrow;
             newTextBox.MouseDown += NewTextBox_Click;
-            newTextBox.MouseMove += newTextBox_MouseMove;
+            newTextBox.MouseMove += NewTextBox_MouseMove;
             tabPage1.Controls.Add(newTextBox);
             buttonLeftPos = newTextBox.Right;
             listOfTextBoxGroups[counter].Add(newTextBox);
@@ -211,25 +201,34 @@ namespace reading_csvs
         {
             // Stop blinking cursor before edit button pressed.
             TextBox TextBoxSender = (TextBox)sender;
-            HideCaret(TextBoxSender.Handle);
+            if (editingEnabled == false)
+            {
+                HideCaret(TextBoxSender.Handle);
+
+            }
 
         }
-        private void newTextBox_MouseMove(object sender, MouseEventArgs e)
+        private void NewTextBox_MouseMove(object sender, MouseEventArgs e)
         {
-            // Disable selected text.
+            // Disable text selection capability.
             TextBox TextBoxSender = (TextBox)sender;
-            TextBoxSender.SelectionLength = 0;
+            if (editingEnabled == false)
+            {
+                TextBoxSender.SelectionLength = 0;
+
+            }
         }
 
         public void PositionSearchResult(int leftIncrement)
         {
             // All the magic numbers here should be put into variables, so people know what the number is and can understand why you are adding it.
-            // E.g.:
-            // int baseOffsetXInPixels = 20;
             int LabelOffsetY = getDataButton.Top;
-            int LabelOffsetX = getDataButton.Right + 20; //baseOffsetXInPixels
-            int delButtonOffsetY = getDataButton.Top + 40;
-            int editButtonOffsetY = getDataButton.Top + 15;
+            int DelButtonAddedOffsetY = 40;
+            int EditButtonAddedOffsetY = 15;
+            int pixelsOffsetFromLabelX = 20;
+            int LabelOffsetX = getDataButton.Right + pixelsOffsetFromLabelX; 
+            int delButtonOffsetY = getDataButton.Top + DelButtonAddedOffsetY;
+            int editButtonOffsetY = getDataButton.Top + EditButtonAddedOffsetY;
             int ButtonOffsetX = getDataButton.Right + 140;
             int labelHeight = 20;
             int numberOfLabels = 4;
@@ -238,19 +237,20 @@ namespace reading_csvs
             const int labelHorGap = 180;
             const int VertGap = 50;
             counter = -1;
-            int horLines = 0;
-            double vertLines = Math.Ceiling((double)numberOfMatches / 2d);
+            int horizontalLines = 0;
+            double verticalLines = Math.Ceiling((double)numberOfMatches / 2d);
             if (listOfMatchIndices.Count() == 1)
             {
-                horLines = 1;
+                horizontalLines = 1;
             }
             else
             {
-                horLines = 2;
+                horizontalLines = 2;
             }
-            for (int i = 0; i < vertLines; i++)
+
+            for (int i = 0; i < verticalLines; i++)
             {
-                for (int j = 0; j < horLines; j++)
+                for (int j = 0; j < horizontalLines; j++)
                 {
                     if (counter+1 < listOfMatchIndices.Count())
                     {
@@ -293,18 +293,19 @@ namespace reading_csvs
             newButton.Top = editButtonTop;
             newButton.Left = buttonLeftPos;
             newButton.Width = 50;
-            newButton.Click += editButton_Click;
+            newButton.Click += EditButton_Click;
             listOfEditButtons.Add(newButton);
             tabPage1.Controls.Add(newButton);
             
         }
     
-        private void editButton_Click(object sender, EventArgs e)
+        private void EditButton_Click(object sender, EventArgs e)
         {
+            editingEnabled = true;
             Button SenderButton = (Button)sender;
-            SenderButton.Click -= editButton_Click;
-            SenderButton.Click += saveButton_Click;
             SenderButton.Text = "Save";
+            SenderButton.Click -= EditButton_Click;
+            SenderButton.Click += SearchSaveButton_Click;
             string name = SenderButton.Name;
             for (int i = 0; i < listOfEditButtons.Count; i++)
             {
@@ -313,15 +314,15 @@ namespace reading_csvs
                     foreach (TextBox box in listOfTextBoxGroups[i])
                     {
                         box.ReadOnly = false;
+                        box.Cursor = Cursors.IBeam;
                     }
-                    
                 }
             }
-
         }
 
-        private void saveButton_Click(object sender, EventArgs e)
+        private void SearchSaveButton_Click(object sender, EventArgs e)
         {
+            editingEnabled = false;
             Button SenderButton = (Button)sender;
             string name = SenderButton.Name;
             for (int i = 0; i < listOfEditButtons.Count; i++)
@@ -334,17 +335,20 @@ namespace reading_csvs
                     PersonToEdit.Gender = listOfTextBoxGroups[i][3].Text;
                     int EditedAge = 0;
                     bool IsInt = int.TryParse(listOfTextBoxGroups[i][2].Text, out EditedAge);
+
                     if (IsInt)
                     {
                         PersonToEdit.Age = EditedAge;
-                        WriteCSV();
-                        SenderButton.Click -= editButton_Click;
-                        SenderButton.Click += saveButton_Click;
                         SenderButton.Text = "Edit";
+                        SenderButton.Click -= SearchSaveButton_Click;
+                        SenderButton.Click += EditButton_Click;
+                        WriteCSV();
                         foreach (TextBox box in listOfTextBoxGroups[i])
                         {
                             box.ReadOnly = true;
+                            box.Cursor = Cursors.Arrow;
                         }
+
                     }
                     else 
                     {
@@ -362,11 +366,12 @@ namespace reading_csvs
             newButton.Top = delButtonTop;
             newButton.Left = buttonLeftPos;
             newButton.Width = 50;
-            newButton.Click += deleteButton_Click;
+            newButton.Click += DeleteButton_Click;
             listOfDeleteButtons.Add(newButton);
             tabPage1.Controls.Add(newButton);
         }
-        private void deleteButton_Click(object sender, EventArgs e)
+
+        private void DeleteButton_Click(object sender, EventArgs e)
         {
             Button SenderButton = (Button)sender;
             string name = SenderButton.Name;
@@ -408,14 +413,14 @@ namespace reading_csvs
 
 
 
-        private void textBoxName_Click(object sender, EventArgs e)
+        private void TextBoxName_Click(object sender, EventArgs e)
         {
             textBoxName.Text = string.Empty;
         }
 
 
         // Add Data.
-        private void addDataButton_Click(object sender, EventArgs e)
+        private void AddDataButton_Click(object sender, EventArgs e)
         {
             int newAge = -1;
             bool isInt = int.TryParse(addAgeTextBox.Text, out newAge);
@@ -430,7 +435,7 @@ namespace reading_csvs
                 Person newPerson = new Person(addFirstNameTextBox.Text, addSurnameTextBox.Text, newAge, addGenderTextBox.Text);
                 personList.Add(newPerson);
 
-                printSuccessMessage(addFirstNameTextBox.Text, addSurnameTextBox.Text);
+                label1.Text = $"{addFirstNameTextBox.Text} {addSurnameTextBox.Text} has been successfully added to the database.";
 
                 addFirstNameTextBox.Text = "Enter first name";
                 addSurnameTextBox.Text = "Enter surname";
@@ -441,59 +446,52 @@ namespace reading_csvs
 
         }
 
-        public void printSuccessMessage(string firstName, string surname)
-        {
-
-            label1.Text = $"{firstName} {surname} has been successfully added to the database.";
-        }
-
-
-        private void addFirstNameTextBox_Click(object sender, EventArgs e)
+        private void AddFirstNameTextBox_Click(object sender, EventArgs e)
         {
             addFirstNameTextBox.Text = string.Empty;
         }
-        private void addSurnameTextBox_Click(object sender, EventArgs e)
+        private void AddSurnameTextBox_Click(object sender, EventArgs e)
         {
             addAgeTextBox.Text = string.Empty;
         }
-        private void addAgeTextBox_Click(object sender, EventArgs e)
+        private void AddAgeTextBox_Click(object sender, EventArgs e)
         {
             addSurnameTextBox.Text = string.Empty;
         }
-        private void addGenderTextBox_Click(object sender, EventArgs e)
+        private void AddGenderTextBox_Click(object sender, EventArgs e)
         {
             addGenderTextBox.Text = string.Empty;
         }
 
         // View all data and make edits.
-        private void dgv2CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        private void DataTableCellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             dataGridView2.ReadOnly = false;
         }
 
-        private void dvg2_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        private void DataTable_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
             MessageBox.Show("Please enter a valid number in the 'Age' category.");
         }
 
-        private void dataGridView2_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void DataTable_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             dataGridView2.ReadOnly = true;
         }
 
-        private void SaveButton_Click(object sender, EventArgs e)
+        private void DataTableSaveButton_Click(object sender, EventArgs e)
         {
             WriteCSV();
         }
 
-        private void tabControl2_SelectedIndexChanged(object sender, EventArgs e)
+        private void TabControl2_SelectedIndexChanged(object sender, EventArgs e)
         {
             dataGridView2.DataSource = personList;
             dataGridView2.Update();
             dataGridView2.Refresh();
             label1.Text = string.Empty;
             textBoxName.Text = string.Empty;
-            comboBox1.Text = "Search by";
+            DropDownBox.Text = "Search by";
         }
 
         private void AddColumn_Click(object sender, EventArgs e)
@@ -506,7 +504,7 @@ namespace reading_csvs
         }
 
         //Export data.
-        private void button1_Click(object sender, EventArgs e)
+        private void ExportButton_Click(object sender, EventArgs e)
         {
             List<object> checkedItems = new List<object>();
 
@@ -514,7 +512,7 @@ namespace reading_csvs
             {
                 checkedItems.Add(itemChecked.ToString());
             }
-            exportAsCSV(checkedItems);
+            ExportAsCSV(checkedItems);
             MessageBox.Show("Export complete.");
             UncheckAll();
         }
@@ -525,7 +523,7 @@ namespace reading_csvs
                 checkedListBox1.SetItemChecked(checkedListBox1.CheckedIndices[0], false);
         }
 
-        public void exportAsCSV(List<object> checkedItems)
+        public void ExportAsCSV(List<object> checkedItems)
         {
             string newFilePath = "C:\\Users\\Egglen\\Documents\\exportedPerson.csv";
             string headersToExport = string.Empty;
