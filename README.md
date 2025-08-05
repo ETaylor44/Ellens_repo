@@ -11,3 +11,6 @@ Python projects:
 - A backend bookstore programme which stores book information in a database and allows users to search for, add and delete information.
 - A programme which generates registers containing various pieces of information for different instances, e.g. orchestral registers and dinner registers (created for use during a youth music residential course).
 - A programme which tracks expenses, income, budgets and financial goals.
+
+Node Projects:
+- Web application on which user can browse, save and upload sheet music.
