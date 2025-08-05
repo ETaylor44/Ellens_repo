@@ -1,0 +1,70 @@
+/* Add a black background color to the top navigation */
+.topnav {
+    background-color: #333;
+    overflow: hidden;
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+float: left;
+text-align: center;
+padding: 14px 16px;
+text-decoration: none;
+font-size: 17px;
+}
+
+.body-buttons{
+    margin-top: 20px
+}
+
+#login-div{
+    width: 30%;
+    margin: auto;
+}
+
+#main-para{
+    margin-bottom: 0px;
+}
+
+.forYouImgSize{
+    height: 370px;
+}
+
+.titleDivHeight{
+    height: 55px;
+}
+
+
+
+#search-bar{
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+
+.activeColour:hover{
+    color: rgba(25, 135, 84, 1);
+}
+
+.links .activeColour:active{
+    border-color: rgba(25, 135, 84, 1);
+    color: rgba(25, 135, 84, 1);
+}
+
+#homeButton:hover{
+    border-color: white;
+}
+
+.dropdown-active:active {
+    background-color: rgba(25, 135, 84, 1);
+    }
+
+.dropdown-menu .active{
+    
+    background-color: rgba(25, 135, 84, 1);
+}
+
+.search-icon{
+    color: rgba(25, 135, 84, 1);
+    padding: 0px;
+}

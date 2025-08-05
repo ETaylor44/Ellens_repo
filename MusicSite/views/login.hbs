@@ -1,0 +1,28 @@
+<div class="container bg-light p-4">
+    <div class="text-center">
+        <h1 class="p-3">Login</h1>
+        <div id="login-div" class="p-4 bg-white shadow-lg">
+            <form method="POST" action="/main">
+                <div class="m-3">
+                    <p id="usernameLabel" class="m-1">Username</p>
+                    <input class="border rounded border-3" id="usernameInput" name="username"></input>
+                </div>
+
+                <div class="m-3">
+                    <p class="m-1">Password</p>
+                    <input class="border rounded border-3" id="passwordInput" name="password"></input>
+                </div>
+
+                <div>
+                    <input type="submit" id="loginButton" class="btn btn-outline-success body-buttons"></input>
+                </div>
+                <p>{{message}}</p>
+                <a class="btn btn-outline-secondary btn-sm body-buttons" href="#">Register</a>
+            </form>
+        </div>
+    </div>
+    {{> paragraph title = "J S Bach"}} 
+</div>
+
+
+<script src="/js/login.js"></script>

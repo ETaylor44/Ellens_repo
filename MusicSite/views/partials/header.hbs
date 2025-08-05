@@ -1,0 +1,52 @@
+<nav class="navbar justify-content-between">
+  <div class="links">
+    <a id="homeButton" class="btn p-3" href="/">
+      <img src="/musical-note.png"  alt="home" width="50px" height="50px">
+    </a>
+    <a class="btn p-3 activeColour" href="/contact">Contact</a>
+    <a class="btn p-3 activeColour" href="/music">Music</a>
+    <a class="btn p-3 activeColour" href="#">Users</a>
+  </div>
+  <div class="d-flex flex-row links">
+    <form class="btn-group">
+      <input class="form-control border-success" id="search-bar" type="search" placeholder="Search Titles" aria-label="Search">
+      <div class="btn-group">
+        <button type="button" class="btn btn-outline-success dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
+        </button>
+        <div class="dropdown-menu dropdown-menu-end">
+          <a class="dropdown-item active dropdown-active search-category" href="#">Titles</a>
+          <a class="dropdown-item dropdown-active search-category" href="#">Composers</a>
+          <a class="dropdown-item dropdown-active search-category" href="#">Users</a>
+        </div>
+        <a id="searchButton" type="submit" class="btn btn-outline-success rounded-right p-3" href="/searchResults">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="btn bi bi-search search-icon" viewBox="0 0 16 16">
+            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+          </svg>
+        </a>
+      </div>
+    </form>
+
+    {{#if loggedIn}}
+    <div>
+      <a class="btn px-4 py-3 mx-2 activeColour" href="#" role="button" data-bs-toggle="dropdown">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+        <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+        </svg>
+      </a>
+      <div class="dropdown-menu dropdown-menu-end mx-2" aria-labelledby="dropdownMenuLink">
+        <a class="dropdown-item dropdown-active" href="#">Account Details</a>
+        <a class="dropdown-item dropdown-active" href="#">Saved Music</a>
+        <div class="dropdown-divider dropdown-active"></div>
+        <a id="logout-button" class="dropdown-item dropdown-active" href="/">Logout</a>
+      </div>
+    </div>
+    {{else}}
+    <a class="btn px-4 py-3 mx-2 activeColour" href="/login">Login</a>
+    {{/if}}
+  </div>
+</nav>
+
+
+<script src="/js/header.js"></script>
+
