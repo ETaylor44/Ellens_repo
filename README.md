@@ -14,3 +14,6 @@ Python projects:
 
 Node Projects:
 - Web application on which user can browse, save and upload sheet music.
+
+Java projects:
+- Spring Boot Banking Application with a React frontend.
