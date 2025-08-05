@@ -1,0 +1,144 @@
+{
+	"info": {
+		"_postman_id": "4d06132e-8ff7-4fe3-9e17-acb79cdfbe00",
+		"name": "Customer Testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40022347"
+	},
+	"item": [
+		{
+			"name": "findAllCustomers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/customers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"customers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getCustomerById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/customers/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"customers",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "saveCustomer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Ellen Taylor\",\n    \"address\": {\n        \"streetNumber\": \"4 Sandport Way\",\n        \"postalCode\": \"Edinburgh\",\n        \"city\": \"EH6 6EA\",\n        \"province\": \"Midlothian\"\n    },\n    \"accounts\": [],\n    \"type\": \"person\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/customers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"customers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteCustomer",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/customers/5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"customers",
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateCustomer",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\n        \"type\": \"company\",\n        \"name\": \"updated\",\n        \"address\": {\n            \"addressId\": 1,\n            \"streetNumber\": \"update attempt\",\n            \"postalCode\": \"Toronto\",\n            \"city\": \"TR3 3E3\",\n            \"province\": \"Ontario\"\n        },\n        \"accounts\": [\n            {\n                \"type\": \"savings\",\n                \"accountId\": 1,\n                \"balance\": 2300.0,\n                \"type\": \"savings\",\n                \"interestRate\": 4.5\n            },\n            {\n                \"type\": \"checking\",\n                \"accountId\": 3,\n                \"balance\": 120.0,\n                \"type\": \"checking\",\n                \"nextCheckNumber\": 1\n            }\n        ]\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/customers/1001",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"customers",
+						"1001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getCustomersByType",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
