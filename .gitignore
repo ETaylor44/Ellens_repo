@@ -3,4 +3,7 @@ __pycache__/
 *.txt
 *.csv
 node_modules/
-
+bin/
+obj/
+Properties/
+.vs/
